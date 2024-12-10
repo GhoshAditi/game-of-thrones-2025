@@ -1,4 +1,4 @@
-import { getUserData } from "@/utils/functions";
+import { getUserData } from '@/utils/functions';
 
 export const populateUserDetails = async (set: any) => {
   set({ userLoading: true });

@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import { populateUserDetails } from "../actions";
-import { userActionsType, userStateType } from "../types";
+import { create } from 'zustand';
+import { populateUserDetails } from '../actions';
+import { userActionsType, userStateType } from '../types';
 
 const userState: userStateType = {
   userData: null,

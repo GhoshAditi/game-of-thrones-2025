@@ -1,1 +1,1 @@
-export * from "./fests";
+export * from './fests';

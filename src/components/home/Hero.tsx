@@ -1,11 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 const Hero = () => {
-  return (
-    <div>
-       Game Of Thrones 2025
-    </div>
-  )
-}
+  return <div>Game Of Thrones 2025</div>;
+};
 
-export default Hero
+export default Hero;

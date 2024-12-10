@@ -1,1 +1,1 @@
-export {default as getUserData} from "./getUserData";
+export { default as getUserData } from './getUserData';
