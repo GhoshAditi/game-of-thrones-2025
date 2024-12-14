@@ -68,6 +68,7 @@ Each folder uses a **barrel export pattern** via `index.ts` files to centralize 
 
 1. **Setup**
 
+   - Install pnpm (if not installed) using npm `npm install -g pnpm`.
    - Install dependencies using `pnpm install`.
    - Start the development server using `pnpm dev`.
 
@@ -81,7 +82,6 @@ Each folder uses a **barrel export pattern** via `index.ts` files to centralize 
 3. **Testing**
 
    - Ensure all features are tested before raising a pull request.
-   - Add test cases for new utilities or business logic.
 
 4. **Documentation**
 
