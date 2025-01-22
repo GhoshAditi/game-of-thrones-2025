@@ -3,10 +3,10 @@ name: Format and Build Check
 on:
   push:
     branches:
-      - '**'
+      - '**' # Triggers on push to any branch
   pull_request:
     branches:
-      - '**'
+      - '**' # Triggers on pull requests from any branch
 
 jobs:
   format-and-build:
@@ -17,28 +17,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Set up Node.js and pnpm
+      # Step 2: Set up Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18 # Replace with your project's Node.js version
-          cache: 'pnpm'
-
-      - name: Install pnpm
-        run: npm install -g pnpm
+          node-version: 20 # Replace with your project's Node.js version
+          cache: 'npm'
 
       # Step 3: Install dependencies
       - name: Install dependencies
-        run: pnpm install
+        run: npm install
 
       # Step 4: Run format check
       - name: Format check
-        run: pnpm format:check
+        run: npm run format:check
         env:
           CI: true
 
       # Step 5: Run build check
       - name: Build check
-        run: pnpm build
+        run: npm run build
         env:
           CI: true
