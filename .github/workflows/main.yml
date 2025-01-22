@@ -22,22 +22,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20 # Replace with your Node.js version
-          cache: 'pnpm'
+          cache: 'npm' # Use npm for dependency caching
 
-      # Step 3: Install pnpm
-      - name: Install pnpm
-        run: npm install -g pnpm
-        env:
-          PATH: /home/runner/.npm-global/bin:${{ env.PATH }}
-
-      # Step 4: Install dependencies
+      # Step 3: Install dependencies without lock file validation
       - name: Install dependencies
-        run: pnpm install
+        run: npm install --no-package-lock
 
-      # Step 5: Run format check
+      # Step 4: Run format check
       - name: Format check
-        run: pnpm run format
+        run: npm run format
 
-      # Step 6: Run build check
+      # Step 5: Run build check
       - name: Build check
-        run: pnpm run build
+        run: npm run build
