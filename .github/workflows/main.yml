@@ -27,6 +27,8 @@ jobs:
       # Step 3: Install pnpm
       - name: Install pnpm
         run: npm install -g pnpm
+        env:
+          PATH: /home/runner/.npm-global/bin:${{ env.PATH }}
 
       # Step 4: Install dependencies
       - name: Install dependencies
