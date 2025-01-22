@@ -21,21 +21,27 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18 # Replace with your Node.js version
-          cache: 'pnpm'
+          node-version: 18 # Matches the version in your project
+          cache: 'npm'
 
-      # Step 3: Install pnpm
-      - name: Install pnpm
-        run: npm install -g pnpm
-
-      # Step 4: Install dependencies
+      # Step 3: Install dependencies
       - name: Install dependencies
-        run: pnpm install
+        run: npm ci
 
-      # Step 5: Run format check
+      # Step 4: Run format check
       - name: Format check
-        run: pnpm run format:check
+        run: npm run check-format
+        env:
+          CI: true
+
+      # Step 5: Run linting (optional but recommended)
+      - name: Lint check
+        run: npm run lint
+        env:
+          CI: true
 
       # Step 6: Run build check
       - name: Build check
-        run: pnpm run build
+        run: npm run build
+        env:
+          CI: true
