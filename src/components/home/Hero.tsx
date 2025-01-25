@@ -4,13 +4,12 @@ import SVGIcon from '../common/SVGIcon'; // Adjust the import path if necessary
 
 const Hero: FC = () => {
   return (
-    <section className="relative flex flex-col items-center justify-center h-screen bg-black">
-      <div className="flex items-center w-full justify-between px-10">
-        {/* Left Honeycomb SVG */}
-        <SVGIcon iconName="leftHero" className="h-[300px] w-[300px]" />
+    <div className="flex w-full flex-row items-center justify-center h-screen bg-black">
+      {/* Left Honeycomb SVG */}
+      <SVGIcon iconName="leftHero" className="h-[300px] w-[300px]" />
 
-        {/* Center GOT Logo and Text */}
-        <div className="text-center">
+      {/* Center GOT Logo and Text */}
+      {/* <div className="text-center">
           <SVGIcon iconName="leftHero" className="h-[300px] w-[300px]" />
           <h1 className="text-4xl font-got text-white">Game of Thrones</h1>
           <p className="text-lg font-instrumentSans text-white mb-6">
@@ -25,12 +24,11 @@ const Hero: FC = () => {
           >
             Register Now
           </button>
-        </div>
+        </div> */}
 
-        {/* Right Honeycomb SVG */}
-        <SVGIcon iconName="rightHero" className="h-[300px] w-[300px]" />
-      </div>
-    </section>
+      {/* Right Honeycomb SVG */}
+      <SVGIcon iconName="rightHero" className="h-[300px] w-[300px]" />
+    </div>
   );
 };
 
