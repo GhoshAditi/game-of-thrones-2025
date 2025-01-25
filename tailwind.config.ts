@@ -8,10 +8,19 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      colors: {
-        background: 'var(--background)',
-        foreground: 'var(--foreground)',
+      fontFamily: {
+        sargento: ['Sargento Gorila', 'sans-serif'],
+        got: ['Game of Thrones', 'sans-serif'],
+        instrumentSans: ['Instrument Sans', 'sans-serif'],
       },
+      colors: {
+        regalia: '#c9a747',
+        body: '#151515',
+      },
+      // cursor: {
+      //   auto: "url(../../public/cursor.png), auto",
+      //   pointer: "url(../../public/cursor-pointer.png), pointer"
+      // },
     },
   },
   plugins: [],

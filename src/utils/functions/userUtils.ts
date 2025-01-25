@@ -7,4 +7,4 @@ const getUserData = async () => {
   }
 };
 
-export default getUserData;
+export { getUserData };
