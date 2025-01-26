@@ -25,3 +25,22 @@
   font-display: swap;
   src: url('../../public/fonts/instrument-sans.ttf');
 }
+
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
+}
+
+
+.adminButton {
+  background: radial-gradient(ellipse at center, #a383e6, #9158FF, #9158FF);
+  color: white;
+   /* text-xl *//* py-7 px-8 */
+  transition: all 0.3s;
+}
+
+.adminButton:hover {
+  box-shadow: 0 4px 6px -1px rgba(63, 42, 103, 0.9); /* hover:shadow-md */
+}
