@@ -4,6 +4,7 @@ import { useAnimate, motion, AnimationScope } from 'framer-motion';
 import { FiMenu, FiArrowUpRight } from 'react-icons/fi';
 import useMeasure from 'react-use-measure';
 import SVGIcon from '../common/SVGIcon';
+import Link from 'next/link';
 
 const Navbar = () => {
   return (
@@ -21,8 +22,7 @@ const GlassNavigation = () => {
   const navRef = useRef<HTMLDivElement | null>(null);
 
   const handleMouseMove = ({ offsetX, offsetY, target }: MouseEvent) => {
-    // @ts-ignore
-    const isNavElement = [...target.classList].includes('glass-nav');
+    const isNavElement = target && Array.from((target as HTMLElement).classList).includes('glass-nav');
 
     if (isNavElement) {
       setHovered(true);
@@ -50,7 +50,7 @@ const GlassNavigation = () => {
       style={{
         cursor: hovered ? 'none' : 'auto',
       }}
-      className="glass-nav fixed left-0 right-0 top-0 z-10 mx-auto  overflow-hidden border-[1px] border-white/10 bg-gradient-to-br from-white/20 to-white/5 backdrop-blur md:left-6 md:right-6 md:top-6 md:rounded-2xl mb-10"
+      className="glass-nav fixed left-0 right-0 top-0 z-10 mx-auto overflow-hidden border-[1px] border-white/10 bg-gradient-to-br from-white/20 to-white/5 backdrop-blur md:left-6 md:right-6 md:top-6 md:rounded-2xl mb-10"
     >
       <div className="glass-nav flex items-center justify-between px-5 py-5">
         <Cursor hovered={hovered} scope={scope} />
@@ -122,9 +122,9 @@ const GlassLink = ({ text }: { text: string }) => {
 
 const TextLink = ({ text }: { text: string }) => {
   return (
-    <a href="#" className="text-white/90 transition-colors hover:text-white">
+    <Link href="#" className="text-white/90 transition-colors hover:text-white">
       {text}
-    </a>
+    </Link>
   );
 };
 
@@ -149,7 +149,7 @@ const Buttons = ({
 
 const SignInButton = () => {
   return (
-    <button className="group relative scale-100 overflow-hidden rounded-lg px-4 py-2 transition-transform hover:scale-105 active:scale-95">
+    <button className="group relative scale-100 overflow-hidden rounded-lg  py-2 transition-transform hover:scale-105 active:scale-95">
       <span className="relative z-10 text-white/90 transition-colors group-hover:text-white bg-blue-500 font-bold rounded-full px-4 py-2">
         Login
       </span>
@@ -168,13 +168,13 @@ const MobileMenu = ({ menuOpen }: { menuOpen: boolean }) => {
       }}
       className="block overflow-hidden md:hidden"
     >
-      <div ref={ref} className="flex items-center justify-between px-4 pb-4">
-        <div className="flex items-center gap-4">
+      <div ref={ref} className="flex flex-col items-start justify-between px-4 pb-4">
+        <div className="flex flex-col items-center gap-7">
           <TextLink text="Home" />
           <TextLink text="Team" />
           <TextLink text="Events" />
+          <SignInButton />
         </div>
-        <SignInButton />
       </div>
     </motion.div>
   );

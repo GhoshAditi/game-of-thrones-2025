@@ -3,7 +3,7 @@ import About from '@/components/about';
 import Sponsors from '@/components/sponsors';
 export default function Home() {
   return (
-    <div>
+    <div className='pt-[100px]'>
       <About />
       <Sponsors />
     </div>
