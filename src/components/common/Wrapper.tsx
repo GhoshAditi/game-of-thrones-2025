@@ -13,7 +13,8 @@ export function Wrapper({ children }: WrapperProps) {
         >
              <SVGIcon
                 iconName="wrapperBg"
-                 className="absolute -top-24 right-5 "
+                useDiv
+                 className="absolute -top-24 right-5  "
                   />
             <div className="container mx-auto px-4 py-16 ">
                 {children}

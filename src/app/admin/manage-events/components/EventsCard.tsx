@@ -45,7 +45,7 @@ interface EventCardsProps {
     onDeleteEvent?: (id: string) => void
 }
 
-export function EventCards({ events, onDeleteEvent }: EventCardsProps) {
+export   function EventCards({ events, onDeleteEvent }: EventCardsProps) {
     onDeleteEvent = onDeleteEvent || (() => {})
     return (
         <div className="space-y-6 w-full max-w-6xl">

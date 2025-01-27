@@ -13,11 +13,9 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode
 }>) {
-    // const buttonClass =
-    //     "bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#a383e6] via-[#9158FF] to-[#9158FF] text-white text-xl px-8 py-7 transition-all hover:shadow-md hover:shadow-[#3f2a67]/90"
-
+   
     return (
-        <div className="bg-black min-h-screen w-full font-instrumentSans ">
+        <div className="bg-black min-h-screen w-full font-instrumentSans  pt-14  max-w-7xl mx-auto">
             <div className="w-full max-w-7xl mx-auto px-4 py-16">
                 <div className="flex flex-col md:flex-row gap-4 w-full justify-center">
                     <Link href="/admin/manage-events" className="w-full md:w-auto">
