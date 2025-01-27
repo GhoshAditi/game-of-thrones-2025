@@ -3,7 +3,7 @@ import SVGIcon from '../common/SVGIcon';
 
 function About() {
   return (
-    <div className="flex flex-row flex-wrap justify-center items-center w-full mx-auto px-5 md:px-10   ">
+    <div className="flex flex-row flex-wrap justify-center items-center w-full mx-auto max-md:px-5    ">
       <SVGIcon
         iconName="helmet"
         className="w-[300px] h-[300px] md:w-[500px] md:h-[500px]"

@@ -5,10 +5,11 @@ import { Wrapper } from '@/components/common/Wrapper';
 import Events from '@/components/events';
 export default function Home() {
   return (
-    <div className='pt-[100px]'>\
-      <Wrapper >
+    <div className="pt-[100px]">
+      \
+      <Wrapper>
         <About />
-        <Events/> 
+        <Events />
       </Wrapper>
       <Sponsors />
     </div>

@@ -1,17 +1,25 @@
-"use client"
+'use client';
 
-import { useState, useMemo } from "react"
-import { Users, Search } from "lucide-react"
-import { FixedSizeList as List } from "react-window"
-import AutoSizer from "react-virtualized-auto-sizer"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import type { EventData, TeamMember } from "./functions"
-import { Filter } from "./EventFilters"
+import { useState, useMemo } from 'react';
+import { Users, Search } from 'lucide-react';
+import { FixedSizeList as List } from 'react-window';
+import AutoSizer from 'react-virtualized-auto-sizer';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import type { EventData, TeamMember } from './functions';
+import { Filter } from './EventFilters';
 
-const COLUMN_WIDTHS = [100, 180, 220, 240, 220, 240, 240, 240, 360, 240, 320, 280]
-const TABLE_WIDTH = COLUMN_WIDTHS.reduce((a, b) => a + b, 0)
+const COLUMN_WIDTHS = [
+  100, 180, 220, 240, 220, 240, 240, 240, 360, 240, 320, 280,
+];
+const TABLE_WIDTH = COLUMN_WIDTHS.reduce((a, b) => a + b, 0);
 
 function TeamMembersDialog({ members }: { members: TeamMember[] }) {
   return (
@@ -32,7 +40,10 @@ function TeamMembersDialog({ members }: { members: TeamMember[] }) {
         <div>
           <div className="flex flex-wrap gap-4">
             {members.map((member, index) => (
-              <div key={index} className="bg-[#1F2937] p-4 rounded-lg w-[300px]">
+              <div
+                key={index}
+                className="bg-[#1F2937] p-4 rounded-lg w-[300px]"
+              >
                 <div className="grid gap-4">
                   <div>
                     <p className="text-sm text-gray-400">Name</p>
@@ -55,17 +66,21 @@ function TeamMembersDialog({ members }: { members: TeamMember[] }) {
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
 
-export default function EventsTable({ initialData }: { initialData: EventData[] }) {
-  const [data] = useState<EventData[]>(initialData)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [paymentStatusFilter, setPaymentStatusFilter] = useState("")
-  const [eventFilter, setEventFilter] = useState("")
-  const [typeFilter, setTypeFilter] = useState("")
-  const [collegeFilter, setCollegeFilter] = useState("")
-  const [registeredAtFilter, setRegisteredAtFilter] = useState("")
+export default function EventsTable({
+  initialData,
+}: {
+  initialData: EventData[];
+}) {
+  const [data] = useState<EventData[]>(initialData);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [paymentStatusFilter, setPaymentStatusFilter] = useState('');
+  const [eventFilter, setEventFilter] = useState('');
+  const [typeFilter, setTypeFilter] = useState('');
+  const [collegeFilter, setCollegeFilter] = useState('');
+  const [registeredAtFilter, setRegisteredAtFilter] = useState('');
 
   const filteredData = useMemo(() => {
     return data.filter((item) => {
@@ -76,50 +91,82 @@ export default function EventsTable({ initialData }: { initialData: EventData[] 
         item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.teamLeadEmail.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.college.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.transactionId.toLowerCase().includes(searchQuery.toLowerCase())
+        item.transactionId.toLowerCase().includes(searchQuery.toLowerCase());
 
-      const paymentStatusMatch = !paymentStatusFilter || item.paymentStatus === paymentStatusFilter
-      const eventMatch = !eventFilter || item.eventName === eventFilter
-      const typeMatch = !typeFilter || item.type === typeFilter
-      const collegeMatch = !collegeFilter || item.college === collegeFilter
+      const paymentStatusMatch =
+        !paymentStatusFilter || item.paymentStatus === paymentStatusFilter;
+      const eventMatch = !eventFilter || item.eventName === eventFilter;
+      const typeMatch = !typeFilter || item.type === typeFilter;
+      const collegeMatch = !collegeFilter || item.college === collegeFilter;
 
       const registeredAtMatch = (() => {
-        if (!registeredAtFilter) return true
-        const now = new Date()
-        const registeredDate = new Date(item.registeredAt)
-        const hoursDiff = (now.getTime() - registeredDate.getTime()) / (1000 * 60 * 60)
+        if (!registeredAtFilter) return true;
+        const now = new Date();
+        const registeredDate = new Date(item.registeredAt);
+        const hoursDiff =
+          (now.getTime() - registeredDate.getTime()) / (1000 * 60 * 60);
 
         switch (registeredAtFilter) {
-          case "Last 24 hours":
-            return hoursDiff <= 24
-          case "Last 7 days":
-            return hoursDiff <= 24 * 7
-          case "Last 30 days":
-            return hoursDiff <= 24 * 30
+          case 'Last 24 hours':
+            return hoursDiff <= 24;
+          case 'Last 7 days':
+            return hoursDiff <= 24 * 7;
+          case 'Last 30 days':
+            return hoursDiff <= 24 * 30;
           default:
-            return true
+            return true;
         }
-      })()
+      })();
 
-      return searchMatch && paymentStatusMatch && eventMatch && typeMatch && collegeMatch && registeredAtMatch
-    })
-  }, [data, searchQuery, paymentStatusFilter, eventFilter, typeFilter, collegeFilter, registeredAtFilter])
+      return (
+        searchMatch &&
+        paymentStatusMatch &&
+        eventMatch &&
+        typeMatch &&
+        collegeMatch &&
+        registeredAtMatch
+      );
+    });
+  }, [
+    data,
+    searchQuery,
+    paymentStatusFilter,
+    eventFilter,
+    typeFilter,
+    collegeFilter,
+    registeredAtFilter,
+  ]);
 
-  const uniqueEvents = useMemo(() => Array.from(new Set(data.map((item) => item.eventName))), [data])
-  const uniqueTypes = useMemo(() => Array.from(new Set(data.map((item) => item.type))), [data])
-  const uniqueColleges = useMemo(() => Array.from(new Set(data.map((item) => item.college))), [data])
+  const uniqueEvents = useMemo(
+    () => Array.from(new Set(data.map((item) => item.eventName))),
+    [data]
+  );
+  const uniqueTypes = useMemo(
+    () => Array.from(new Set(data.map((item) => item.type))),
+    [data]
+  );
+  const uniqueColleges = useMemo(
+    () => Array.from(new Set(data.map((item) => item.college))),
+    [data]
+  );
 
   const clearAllFilters = () => {
-    setSearchQuery("")
-    setPaymentStatusFilter("")
-    setEventFilter("")
-    setTypeFilter("")
-    setCollegeFilter("")
-    setRegisteredAtFilter("")
-  }
+    setSearchQuery('');
+    setPaymentStatusFilter('');
+    setEventFilter('');
+    setTypeFilter('');
+    setCollegeFilter('');
+    setRegisteredAtFilter('');
+  };
 
-  const Row = ({ index, style }: { index: number; style: React.CSSProperties }) => {
-    const item = filteredData[index]
+  const Row = ({
+    index,
+    style,
+  }: {
+    index: number;
+    style: React.CSSProperties;
+  }) => {
+    const item = filteredData[index];
 
     return (
       <div
@@ -127,15 +174,19 @@ export default function EventsTable({ initialData }: { initialData: EventData[] 
         className="flex items-center border-b border-gray-800 hover:bg-[#131926] transition-colors"
       >
         {COLUMN_WIDTHS.map((width, colIndex) => (
-          <div key={colIndex} className="p-4 flex-none text-gray-100" style={{ width: width }}>
+          <div
+            key={colIndex}
+            className="p-4 flex-none text-gray-100"
+            style={{ width: width }}
+          >
             {colIndex === 0 ? (
               item.slNo
             ) : colIndex === 1 ? (
               <span
                 className={`px-2 py-1 rounded-md font-medium ${
-                  item.paymentStatus === "Verified"
-                    ? "bg-[#132F21] text-[#4ADE80] border border-[#4ADE80]/20"
-                    : "bg-[#2A1215] text-[#F87171] border border-[#F87171]/20"
+                  item.paymentStatus === 'Verified'
+                    ? 'bg-[#132F21] text-[#4ADE80] border border-[#4ADE80]/20'
+                    : 'bg-[#2A1215] text-[#F87171] border border-[#F87171]/20'
                 }`}
               >
                 {item.paymentStatus}
@@ -143,7 +194,9 @@ export default function EventsTable({ initialData }: { initialData: EventData[] 
             ) : colIndex === 2 ? (
               item.eventName
             ) : colIndex === 3 ? (
-              <span className="px-2 py-1 rounded-md bg-[#1F2937] text-gray-300">{item.type}</span>
+              <span className="px-2 py-1 rounded-md bg-[#1F2937] text-gray-300">
+                {item.type}
+              </span>
             ) : colIndex === 4 ? (
               item.teamName
             ) : colIndex === 5 ? (
@@ -155,7 +208,9 @@ export default function EventsTable({ initialData }: { initialData: EventData[] 
             ) : colIndex === 8 ? (
               item.teamLeadEmail
             ) : colIndex === 9 ? (
-              <span className="font-mono text-gray-300">{item.transactionId}</span>
+              <span className="font-mono text-gray-300">
+                {item.transactionId}
+              </span>
             ) : colIndex === 10 ? (
               <div className="min-w-[300px]">
                 <TeamMembersDialog members={item.teamMembers} />
@@ -166,8 +221,8 @@ export default function EventsTable({ initialData }: { initialData: EventData[] 
           </div>
         ))}
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <div className="space-y-4">
@@ -183,57 +238,87 @@ export default function EventsTable({ initialData }: { initialData: EventData[] 
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <Filter
-            options={["Verified", "Not Verified"]}
+          options={['Verified', 'Not Verified']}
           value={paymentStatusFilter}
           onChange={setPaymentStatusFilter}
           placeholder="Payment Status"
         />
-        <Filter options={uniqueEvents} value={eventFilter} onChange={setEventFilter} placeholder="Event" />
-        <Filter options={uniqueTypes} value={typeFilter} onChange={setTypeFilter} placeholder="Type" />
-        <Filter options={uniqueColleges} value={collegeFilter} onChange={setCollegeFilter} placeholder="College" />
         <Filter
-          options={["Last 24 hours", "Last 7 days", "Last 30 days"]}
+          options={uniqueEvents}
+          value={eventFilter}
+          onChange={setEventFilter}
+          placeholder="Event"
+        />
+        <Filter
+          options={uniqueTypes}
+          value={typeFilter}
+          onChange={setTypeFilter}
+          placeholder="Type"
+        />
+        <Filter
+          options={uniqueColleges}
+          value={collegeFilter}
+          onChange={setCollegeFilter}
+          placeholder="College"
+        />
+        <Filter
+          options={['Last 24 hours', 'Last 7 days', 'Last 30 days']}
           value={registeredAtFilter}
           onChange={setRegisteredAtFilter}
           placeholder="Registered At"
-              />
-              <Button
-                  onClick={clearAllFilters}
-                  variant="outline"
-                  disabled={ !searchQuery && !paymentStatusFilter && !eventFilter && !typeFilter && !collegeFilter && !registeredAtFilter }
-                  className="bg-[#1F2937] border-gray-700 hover:bg-[#2D3748] hover:text-white text-gray-300 disabled:cursor-not-allowed "
-              >
-                  Clear All Filters
-              </Button>
+        />
+        <Button
+          onClick={clearAllFilters}
+          variant="outline"
+          disabled={
+            !searchQuery &&
+            !paymentStatusFilter &&
+            !eventFilter &&
+            !typeFilter &&
+            !collegeFilter &&
+            !registeredAtFilter
+          }
+          className="bg-[#1F2937] border-gray-700 hover:bg-[#2D3748] hover:text-white text-gray-300 disabled:cursor-not-allowed "
+        >
+          Clear All Filters
+        </Button>
       </div>
-      
-     
+
       <div className="overflow-x-auto border border-gray-800 rounded-lg bg-[#0B0F17]">
         <div style={{ width: TABLE_WIDTH }}>
           <div className="sticky top-0 z-10 flex items-center font-bold border-b border-gray-800 bg-[#0B0F17]">
             {[
-              "SL No.",
-              "Payment Status",
-              "Event Name",
-              "Type",
-              "Team Name",
-              "College",
-              "Team Lead",
-              "Phone",
-              "Email",
-              "Transaction ID",
-              "Members",
-              "Registered At",
+              'SL No.',
+              'Payment Status',
+              'Event Name',
+              'Type',
+              'Team Name',
+              'College',
+              'Team Lead',
+              'Phone',
+              'Email',
+              'Transaction ID',
+              'Members',
+              'Registered At',
             ].map((header, index) => (
-              <div key={index} className="p-4 flex-none text-gray-100" style={{ width: COLUMN_WIDTHS[index] }}>
+              <div
+                key={index}
+                className="p-4 flex-none text-gray-100"
+                style={{ width: COLUMN_WIDTHS[index] }}
+              >
                 {header}
               </div>
             ))}
           </div>
-          <div style={{ height: "600px", width: "103%" }}>
+          <div style={{ height: '600px', width: '103%' }}>
             <AutoSizer>
               {({ height, width }) => (
-                <List height={height} width={width} itemCount={filteredData.length} itemSize={50}>
+                <List
+                  height={height}
+                  width={width}
+                  itemCount={filteredData.length}
+                  itemSize={50}
+                >
                   {Row}
                 </List>
               )}
@@ -242,6 +327,5 @@ export default function EventsTable({ initialData }: { initialData: EventData[] 
         </div>
       </div>
     </div>
-  )
+  );
 }
-

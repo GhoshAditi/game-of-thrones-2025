@@ -20,7 +20,7 @@
 }
 
 .card::after {
-  content: "";
+  content: '';
   display: block;
   position: absolute;
   top: 0;
@@ -55,7 +55,9 @@
   background: radial-gradient(ellipse at center, #a383e6, #9158ff, #9158ff);
   opacity: 0;
   transform: translateY(1rem);
-  transition: opacity var(--d) var(--e), transform var(--d) var(--e);
+  transition:
+    opacity var(--d) var(--e),
+    transform var(--d) var(--e);
 }
 
 /* Mobile styles */
@@ -81,7 +83,9 @@
   .content > *:not(:first-child) {
     opacity: 0;
     transform: translateY(1rem);
-    transition: transform var(--d) var(--e), opacity var(--d) var(--e);
+    transition:
+      transform var(--d) var(--e),
+      opacity var(--d) var(--e);
   }
 
   .card:hover .cardBackground,
@@ -124,7 +128,7 @@
   .content.active {
     transform: translateY(calc(100% - 4.5rem));
   }
-  
+
   .content.active .registerButton {
     opacity: 0;
     transform: translateY(1rem);
