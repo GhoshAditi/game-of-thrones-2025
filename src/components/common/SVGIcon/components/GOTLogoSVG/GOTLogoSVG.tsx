@@ -13,7 +13,7 @@ const GOTLogoSVG: FC<IIconProps> = (props) => {
       className={className}
       width={width}
       height={height}
-      viewBox="0 0 455 643"
+      viewBox="0 0 455 450"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"

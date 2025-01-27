@@ -5,4 +5,5 @@ export const IconMap = {
   rightHero: lazy(() => import('./components/RightHeroSVG')),
   gotLogo: lazy(() => import('./components/GOTLogoSVG')),
   footerbg: lazy(() => import('./components/FooterSVG')),
+  backgroundHero: lazy(() => import('./components/BackgroundHero')),
 };
