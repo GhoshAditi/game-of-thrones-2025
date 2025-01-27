@@ -16,7 +16,7 @@ export function Wrapper({ children }: WrapperProps) {
                 useDiv
                  className="absolute -top-24 right-5  "
                   />
-            <div className="container mx-auto px-4 py-16 ">
+            <div className="container mx-auto  py-16 ">
                 {children}
             </div>
         </div>

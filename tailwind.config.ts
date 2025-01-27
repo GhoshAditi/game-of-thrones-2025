@@ -32,10 +32,10 @@ const config: Config = {
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
 			},
-			 cursor: {
-			 auto: "url(../../public/cursor.png), auto",
-			pointer: "url(../../public/cursor-pointer.png), pointer"
-			 },
+			//  cursor: {
+			//  auto: "url(../../public/cursor.png), auto",
+			// pointer: "url(../../public/cursor-pointer.png), pointer"
+			//  },
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
