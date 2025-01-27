@@ -3,12 +3,12 @@ import SVGIcon from '../common/SVGIcon';
 
 function About() {
   return (
-    <div className="flex flex-row flex-wrap justify-center items-center w-full mx-auto px-5 md:px-10  ">
+    <div className="flex flex-row flex-wrap justify-center items-center w-full mx-auto px-5 md:px-10   ">
       <SVGIcon
         iconName="helmet"
         className="w-[300px] h-[300px] md:w-[500px] md:h-[500px]"
       />
-      <div className="text-xs md:text-lg leading-loose text-white w-3/5 lg:w-1/3 mx-auto text-justify font-instrumentSans">
+      <div className="text-xs md:text-lg leading-loose text-white w-3/5 lg:w-1/3 mx-auto text-justify font-instrumentSans z-30">
         Game of Thrones (GoT’25), RCC Institute of Information Technology's
         Annual Sports Meet, is back as a National Inter College Sports
         Tournament in Kolkata happening in January 2024. Featuring diverse
