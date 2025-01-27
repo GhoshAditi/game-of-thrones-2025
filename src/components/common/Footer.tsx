@@ -1,7 +1,6 @@
-import React from 'react';
-import SVGIcon from './SVGIcon';
 import { FaInstagram, FaGoogle, FaFacebook } from 'react-icons/fa';
 import Link from 'next/link';
+import SVGIcon from './SVGIcon';
 
 const ABOUT_LINK = '/about';
 const EVENTS_LINK = '/events';
@@ -12,51 +11,44 @@ const FACEBOOK_LINK = 'https://www.facebook.com';
 
 const Footer = () => {
   return (
-    <footer className="relative flex flex-col items-center justify-center py-12 md:h-screen">
-      <div
-        className="absolute inset-0"
-        style={{ clipPath: 'inset(0 0 15% 0)' }}
-      >
-        <SVGIcon iconName="footerbg" className="w-full h-full" />
+    <div
+      style={{
+        background:
+          'linear-gradient(357.15deg, #9158FF 2.25%, rgba(146, 155, 255, 0.61) 97.52%)',
+      }}
+      className="flex flex-row items-center justify-between"
+    >
+      <SVGIcon iconName="footerLeft" />
+      <div className="flex flex-col w-1/2 items-center justify-center">
+        <div className="relative w-full">
+          <SVGIcon
+            iconName="gotLogo"
+            className="w-[20vw] h-fit md:h-[30vh] flex justify-center mx-auto "
+          />
+          <h1 className="font-got absolute top-[50%] mx-auto w-full my-auto text-xl md:text-4xl text-center font-semibold tracking-wider">
+            GAME OF THRONES
+          </h1>
+        </div>
+        <div className="flex flex-row flex-wrap font-sargento text-base md:text-3xl mt-4 md:mt-10 justify-center items-center gap-4 md:gap-10">
+          <Link href={ABOUT_LINK}>About</Link>
+          <Link href={EVENTS_LINK}>Events</Link>
+          <Link href={TEAM_LINK}>Team</Link>
+        </div>
+        <div className="flex flex-row gap-5 mt-10">
+          <Link href={INSTAGRAM_LINK} target="_blank" rel="noreferrer">
+            <FaInstagram size={30} color="white" />
+          </Link>
+          <Link href={GOOGLE_LINK} target="_blank" rel="noreferrer">
+            <FaGoogle size={30} color="white" />
+          </Link>
+          <Link href={FACEBOOK_LINK} target="_blank" rel="noreferrer">
+            <FaFacebook size={30} color="white" />
+          </Link>
+        </div>
+        {/* <p className='text-white text-center mt-5 font-semibold'>© 2025 Game of Thrones. All rights reserved.</p> */}
       </div>
-      <h1 className="relative text-xl md:text-4xl pt-6 md:pt-[12rem] font-black text-center text-white font-got z-10 tracking-wider">
-        Game of Thrones
-      </h1>
-      <h2 className="relative text-base md:text-2xl pt-2 text-center font-sargento text-white z-10">
-        <Link href={ABOUT_LINK} className="mx-2 hover:text-gray-300">
-          About
-        </Link>
-        <Link href={EVENTS_LINK} className="mx-2 hover:text-gray-300">
-          Events
-        </Link>
-        <Link href={TEAM_LINK} className="mx-2 hover:text-gray-300">
-          Team
-        </Link>
-      </h2>
-      <div className="relative flex pt-4 text-white z-10">
-        <a
-          href={INSTAGRAM_LINK}
-          className="mx-2 hover:text-gray-300"
-          aria-label="Instagram"
-        >
-          <FaInstagram size="1.5em" />
-        </a>
-        <a
-          href={GOOGLE_LINK}
-          className="mx-2 hover:text-gray-300"
-          aria-label="Google"
-        >
-          <FaGoogle size="1.5em" />
-        </a>
-        <a
-          href={FACEBOOK_LINK}
-          className="mx-2 hover:text-gray-300"
-          aria-label="Facebook"
-        >
-          <FaFacebook size="1.5em" />
-        </a>
-      </div>
-    </footer>
+      <SVGIcon iconName="footerRight" />
+    </div>
   );
 };
 

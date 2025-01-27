@@ -6,4 +6,10 @@ export const IconMap = {
   gotLogo: lazy(() => import('./components/GOTLogoSVG')),
   footerbg: lazy(() => import('./components/FooterSVG')),
   backgroundHero: lazy(() => import('./components/BackgroundHero')),
+  helmet: lazy(() => import('./components/HelmetSVG')),
+  football: lazy(() => import('./components/FootballSVG')),
+  sponsorsLines: lazy(() => import('./components/SponsorsLinesSVG')),
+  logo: lazy(() => import('./components/LogoSVG')),
+  footerLeft: lazy(() => import('./components/FooterLeft')),
+  footerRight: lazy(() => import('./components/FooterRight')),
 };
