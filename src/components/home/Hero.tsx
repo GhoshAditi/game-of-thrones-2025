@@ -1,52 +1,39 @@
 'use client';
-import { FC } from 'react';
-import SVGIcon from '../common/SVGIcon';
+import React, { useState, useEffect } from 'react';
+import MobileHero from './MobileHero';
+import DesktopHero from './DesktopHero';
+const useMobileDetect = () => {
+  const [isMobile, setIsMobile] = useState(false);
 
-const Hero: FC = () => {
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+
+    const handleMediaChange = (e: MediaQueryListEvent) => {
+      setIsMobile(e.matches);
+    };
+
+    setIsMobile(mediaQuery.matches);
+
+    mediaQuery.addEventListener('change', handleMediaChange);
+
+    return () => {
+      mediaQuery.removeEventListener('change', handleMediaChange);
+    };
+  }, []);
+
+  return isMobile;
+};
+
+const HeroSection = () => {
+  const isMobile = useMobileDetect();
+
   return (
-    <div className="flex flex-row justify-center w-full">
-      {/* Left Honeycomb SVG */}
-      <div className="flex-1 flex justify-center">
-        <SVGIcon
-          iconName="leftHero"
-          className="h-[150px] w-[150px] md:h-[537px] md:w-[577px]"
-        />
-      </div>
-
-      {/* Center GOT Logo and Text */}
-      <div className="text-center relative flex-shrink-0 px-4">
-        <SVGIcon
-          iconName="gotLogo"
-          className="h-[100px] w-[90px] md:h-[400px] md:w-[300px]"
-        />
-        <div className="absolute top-1/2 left-0 right-0 transform -translate-y-1/2 px-4">
-          <h1 className="text-sm md:text-2xl tracking-wider mt-72 md:mt-56 font-got text-white">
-            Game of Thrones
-          </h1>
-          <p className="text-sm md:text-2xl font-instrumentSans text-white mb-4">
-            Inter College State Level Sports Fest
-          </p>
-          <button
-            className="py-2 px-3 md:py-4 md:px-4 font-sargento text-sm md:text-xl text-white rounded-lg shadow-md"
-            style={{
-              background:
-                'radial-gradient(130.78% 1677.05% at 50% 50%, #9158FF 0%, #FFFFFF 100%)',
-            }}
-          >
-            REGISTER NOW
-          </button>
-        </div>
-      </div>
-
-      {/* Right Honeycomb SVG */}
-      <div className="flex-1 flex justify-center">
-        <SVGIcon
-          iconName="rightHero"
-          className="h-[150px] w-[150px] md:h-[537px] md:w-[577px]"
-        />
+    <div className="min-h-screen w-full">
+      <div className="relative w-full">
+        {isMobile ? <MobileHero /> : <DesktopHero />}
       </div>
     </div>
   );
 };
 
-export default Hero;
+export default HeroSection;
