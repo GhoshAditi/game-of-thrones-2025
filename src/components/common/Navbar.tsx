@@ -22,7 +22,9 @@ const GlassNavigation = () => {
   const navRef = useRef<HTMLDivElement | null>(null);
 
   const handleMouseMove = ({ offsetX, offsetY, target }: MouseEvent) => {
-    const isNavElement = target && Array.from((target as HTMLElement).classList).includes('glass-nav');
+    const isNavElement =
+      target &&
+      Array.from((target as HTMLElement).classList).includes('glass-nav');
 
     if (isNavElement) {
       setHovered(true);
@@ -59,7 +61,10 @@ const GlassNavigation = () => {
 
         <Logo />
 
-        <Buttons setMenuOpen={setMenuOpen} />
+        <div className="flex flex-row items-center gap-4">
+          <GlassLink text="Coordinator" link="/events" />
+          <Buttons setMenuOpen={setMenuOpen} />
+        </div>
       </div>
 
       <MobileMenu menuOpen={menuOpen} />
@@ -100,29 +105,34 @@ const Logo = () => (
 
 const Links = () => (
   <div className="hidden items-center gap-2 md:flex">
-    <GlassLink text="Home" />
-    <GlassLink text="Team" />
-    <GlassLink text="Events" />
+    <GlassLink text="Home" link="/" />
+    <GlassLink text="Events" link="/events" />
+    <GlassLink text="Team" link="/team" />
+    <GlassLink text="Gallery" link="/gallery" />
+    <GlassLink text="Contacts" link="/contacts" />
   </div>
 );
 
-const GlassLink = ({ text }: { text: string }) => {
+const GlassLink = ({ text, link }: { text: string; link: string }) => {
   return (
-    <a
-      href="#"
+    <Link
+      href={link}
       className="group relative scale-100 overflow-hidden rounded-lg px-4 py-2 transition-transform hover:scale-105 active:scale-95"
     >
       <span className="relative z-10 text-white/90 transition-colors group-hover:text-white">
         {text}
       </span>
       <span className="absolute inset-0 z-0 bg-gradient-to-br from-white/20 to-white/5 opacity-0 transition-opacity group-hover:opacity-100" />
-    </a>
+    </Link>
   );
 };
 
-const TextLink = ({ text }: { text: string }) => {
+const TextLink = ({ text, link }: { text: string; link: string }) => {
   return (
-    <Link href="#" className="text-white/90 transition-colors hover:text-white">
+    <Link
+      href={link}
+      className="text-white/90 transition-colors hover:text-white"
+    >
       {text}
     </Link>
   );
@@ -168,11 +178,14 @@ const MobileMenu = ({ menuOpen }: { menuOpen: boolean }) => {
       }}
       className="block overflow-hidden md:hidden"
     >
-      <div ref={ref} className="flex flex-col items-start justify-between px-4 pb-4">
+      <div
+        ref={ref}
+        className="flex flex-col items-start justify-between px-4 pb-4"
+      >
         <div className="flex flex-col items-center gap-7">
-          <TextLink text="Home" />
-          <TextLink text="Team" />
-          <TextLink text="Events" />
+          <TextLink text="Home" link="/" />
+          <TextLink text="Team" link="/team" />
+          <TextLink text="Events" link="/events" />
           <SignInButton />
         </div>
       </div>
