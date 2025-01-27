@@ -24,7 +24,7 @@ const FootballSVG: FC<IIconProps> = (props) => {
         height="1014"
         transform="rotate(18.4711 291.261 0)"
         fill="url(#pattern0_75_33)"
-        fill-opacity="0.84"
+        fillOpacity="0.84"
       />
       <defs>
         <pattern
