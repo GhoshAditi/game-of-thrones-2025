@@ -6,7 +6,7 @@ import Events from '@/components/events';
 export default function Home() {
   return (
     <div className="pt-[100px]">
-      \
+      <Hero />
       <Wrapper>
         <About />
         <Events />

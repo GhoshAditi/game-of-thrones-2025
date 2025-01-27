@@ -1,25 +1,43 @@
-'use client';
-import { Suspense, useEffect } from 'react';
+import React from 'react';
 import SVGIcon from '../common/SVGIcon';
 
 const Hero = () => {
-  // const { setUserData } = useUser();
-
-  // useEffect(()=>{
-  //   setUserData();
-  // },[]);
   return (
-    <div className="">
-      <h1 className="font-got">Hello</h1>
-      <h1 className="font-sargento">World</h1>
-      <h1 className="font-instrumentSans">GOT</h1>
-      <Suspense fallback={<></>}>
+    <div className="flex flex-row py-12 sm:py-20 max-md:h-full h-[100vh] text-white justify-between relative w-full overflow-hidden">
+      <SVGIcon
+        iconName="leftHero"
+        className="max-lg:absolute max-lg:top-0 max-lg:left-0 w-[40vw] h-fit sm:w-[40vw] lg:w-[33vw] lg:h-full"
+      />
+      <SVGIcon
+        iconName="backgroundHero"
+        className="absolute w-[100%] h-full lg:h-[120vh] top-0 "
+      />
+      <div className="flex flex-col z-10 justify-center text-center mx-auto w-fit md:w-1/2 lg:w-full items-center relative">
         <SVGIcon
-          iconName="leftHero"
-          className="w-[800px] lg:w-[500px] bg-black lg:bg-blue-500"
-          useDiv
+          iconName="gotLogo"
+          className="w-[40vw] h-[40vw] sm:w-[20vw] sm:h-[20vw] lg:h-[25vw] lg:w-[25vw]"
         />
-      </Suspense>
+        <h1 className="text-xs mt-4 sm:text-xl lg:text-2xl xl:text-4xl tracking-wider font-got text-white">
+          Game of Thrones
+        </h1>
+        <p className="text-xs text-center md:text-xl lg:text-2xl mt-2 font-instrumentSans text-white mb-4">
+          Inter College State Level Sports Fest
+        </p>
+
+        <button
+          className="px-3 py-2 md:py-4 md:px-4 font-sargento text-xs md:text-sm lg:text-xl text-white rounded-lg shadow-md"
+          style={{
+            background:
+              'radial-gradient(130.78% 1677.05% at 50% 50%, #9158FF 0%, #FFFFFF 100%)',
+          }}
+        >
+          REGISTER NOW
+        </button>
+      </div>
+      <SVGIcon
+        iconName="rightHero"
+        className="max-lg:absolute max-lg:bottom-0 max-lg:right-0 w-[40vw] h-fit sm:w-[40vw] lg:w-[33vw] lg:h-full"
+      />
     </div>
   );
 };
