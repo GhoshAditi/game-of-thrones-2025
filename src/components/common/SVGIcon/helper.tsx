@@ -13,4 +13,5 @@ export const IconMap = {
   logo: lazy(() => import('./components/LogoSVG')),
   footerLeft: lazy(() => import('./components/FooterLeft')),
   footerRight: lazy(() => import('./components/FooterRight')),
+  pin: lazy(() => import('./components/PinSVG')),
 };

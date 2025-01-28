@@ -6,7 +6,7 @@ import { locations } from "@/utils/functions/constant";
 const Location = () => {
   return (
     <div>
-          <SVGIcon iconName="wrapperBg" className="absolute inset-0 w-full h-full bg-cover bg-center z-[-1]" />
+          <SVGIcon iconName="wrapperBg" className="absolute inset-0 w-full h-full bg-cover bg-center z-[-1] hidden md:block" />
      
     <div className="relative min-h-screen overflow-hidden">
      
