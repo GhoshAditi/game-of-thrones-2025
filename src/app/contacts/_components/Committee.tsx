@@ -3,9 +3,18 @@ import SVGIcon from '@/components/common/SVGIcon';
 const Committee = () => {
   return (
     <div>
-<SVGIcon iconName="wrapperBg" className="absolute inset-0 w-full h-full bg-cover bg-center z-[-1] hidden md:block" />
-    <div className="flex flex-col items-center justify-center gap-8 lg:gap-16">
-      {CommitteeDetails.map((item, index) => {
+<SVGIcon 
+  iconName="contactBg1" 
+  className="fixed top-0 right-0 w-[500px] h-[1000px] z-[-1] hidden md:block" 
+/>
+<SVGIcon 
+  iconName="contactBg2" 
+  className="fixed top-0 left-0  md:w-[800px] md:h-[1000px] z-[-1] hidden md:block " 
+/>
+
+    <div className="flex flex-col items-center justify-center gap-10 lg:gap-16">
+    <SVGIcon iconName="sponsorsLines" className="fixed bottom-0 left-0 w-full h-auto bg-cover bg-center z-[-1] md:hidden sm:block" />
+    {CommitteeDetails.map((item, index) => {
         return (
           <div
             key={index}

@@ -186,6 +186,8 @@ const MobileMenu = ({ menuOpen }: { menuOpen: boolean }) => {
           <TextLink text="Home" link="/" />
           <TextLink text="Team" link="/team" />
           <TextLink text="Events" link="/events" />
+          <GlassLink text="Gallery" link="/gallery" />
+    <GlassLink text="Contacts" link="/contacts" />
           <SignInButton />
         </div>
       </div>
