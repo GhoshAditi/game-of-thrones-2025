@@ -5,6 +5,10 @@ import { FiMenu, FiArrowUpRight } from 'react-icons/fi';
 import useMeasure from 'react-use-measure';
 import SVGIcon from '../common/SVGIcon';
 import Link from 'next/link';
+import { login } from '@/utils/functions/auth/login';
+import { useUser } from '@/lib/stores/user';
+import { supabase } from '@/utils/functions/supabase-client';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
 const Navbar = () => {
   return (
@@ -84,9 +88,8 @@ const Cursor = ({
       initial={false}
       animate={{
         opacity: hovered ? 1 : 0,
-        transform: `scale(${
-          hovered ? 1 : 0
-        }) translateX(-50%) translateY(-50%)`,
+        transform: `scale(${hovered ? 1 : 0
+          }) translateX(-50%) translateY(-50%)`,
       }}
       transition={{ duration: 0.15 }}
       ref={scope}
@@ -158,8 +161,30 @@ const Buttons = ({
 );
 
 const SignInButton = () => {
+  const { userData, userLoading } = useUser()
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const readUserSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data) {
+        setProfileImage(data?.session?.user.user_metadata?.avatar_url);
+      }
+    }
+    readUserSession();
+  }, []);
+  if (userData) {
+    return (
+      <Avatar>
+        <AvatarImage src={profileImage || undefined} alt="Profile" />
+        <AvatarFallback>{userData.email?.charAt(0).toUpperCase()}</AvatarFallback>
+      </Avatar>
+    )
+  }
+
+
   return (
-    <button className="group relative scale-100 overflow-hidden rounded-lg  py-2 transition-transform hover:scale-105 active:scale-95">
+    <button className="group relative scale-100 overflow-hidden rounded-lg  py-2 transition-transform hover:scale-105 active:scale-95" onClick={login}>
       <span className="relative z-10 text-white/90 transition-colors group-hover:text-white bg-blue-500 font-bold rounded-full px-4 py-2">
         Login
       </span>
