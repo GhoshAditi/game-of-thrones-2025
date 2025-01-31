@@ -163,7 +163,7 @@ const Buttons = ({
 const SignInButton = () => {
   const { userData, userLoading } = useUser()
   const [profileImage, setProfileImage] = useState<string | null>(null);
-
+  console.log(userData)
   useEffect(() => {
     const readUserSession = async () => {
       const { data } = await supabase.auth.getSession();
