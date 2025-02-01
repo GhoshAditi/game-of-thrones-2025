@@ -9,6 +9,9 @@ import { login } from '@/utils/functions/auth/login';
 import { useUser } from '@/lib/stores/user';
 import { supabase } from '@/utils/functions/supabase-client';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Skeleton } from '@/components/ui/skeleton';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import { logout } from '@/utils/functions/auth/logout';
 
 const Navbar = () => {
   return (
@@ -160,38 +163,67 @@ const Buttons = ({
   </div>
 );
 
-const SignInButton = () => {
-  const { userData, userLoading } = useUser()
-  const [profileImage, setProfileImage] = useState<string | null>(null);
-  console.log(userData)
+export const SignInButton = () => {
+  const { userData,userLoading } = useUser()
+  const [profileImage, setProfileImage] = useState<string | null>(null)
+  const [imageLoaded, setImageLoaded] = useState(false)
+
   useEffect(() => {
     const readUserSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data) {
-        setProfileImage(data?.session?.user.user_metadata?.avatar_url);
+      const { data } = await supabase.auth.getSession()
+      if (data?.session?.user.user_metadata?.avatar_url) {
+        setProfileImage(data.session.user.user_metadata.avatar_url)
       }
     }
-    readUserSession();
-  }, []);
-  if (userData) {
+    readUserSession()
+  }, [])
+
+  if (userLoading) {
     return (
-      <Avatar>
-        <AvatarImage src={profileImage || undefined} alt="Profile" />
-        <AvatarFallback>{userData.email?.charAt(0).toUpperCase()}</AvatarFallback>
-      </Avatar>
+      <Skeleton className="w-10 h-10 rounded-full bg-gray-600" />
+    )
+  }
+
+  if (userData && profileImage) {
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <Avatar className="relative">
+            {!imageLoaded && <Skeleton className="w-10 h-10 rounded-full absolute inset-0" />}
+            <AvatarImage
+              src={profileImage}
+              alt="Profile"
+              onLoad={() => setImageLoaded(true)}
+              className={imageLoaded ? "block" : "hidden"}
+            />
+          </Avatar>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onSelect={
+            () => {
+              logout()
+              window.location.reload();
+            }
+            }>Logout</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     )
   }
 
 
   return (
-    <button className="group relative scale-100 overflow-hidden rounded-lg  py-2 transition-transform hover:scale-105 active:scale-95" onClick={login}>
+    <button
+      className="group relative scale-100 overflow-hidden rounded-lg py-2 transition-transform hover:scale-105 active:scale-95"
+      onClick={login}
+    >
       <span className="relative z-10 text-white/90 transition-colors group-hover:text-white bg-blue-500 font-bold rounded-full px-4 py-2">
         Login
       </span>
       <span className="absolute inset-0 z-0 bg-gradient-to-br from-white/20 to-white/5 opacity-0 transition-opacity group-hover:opacity-100" />
     </button>
-  );
-};
+  )
+}
+
 
 const MobileMenu = ({ menuOpen }: { menuOpen: boolean }) => {
   const [ref, { height }] = useMeasure();
