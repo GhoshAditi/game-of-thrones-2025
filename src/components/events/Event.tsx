@@ -20,7 +20,8 @@ const containerVariants = {
 const cardVariants = {
   hidden: { opacity: 0, y: -20 },
   visible: {
-    opacity: 1, y: 0,
+    opacity: 1,
+    y: 0,
     transition: { duration: 0.5, ease: 'easeOut' },
   },
 };
@@ -35,10 +36,15 @@ export default function EventPage() {
     }
   }, [controls, inView]);
 
+  const formatSchedule = (schedule: string) => {
+    const [dates, month] = schedule.split(' ');
+    return { dates, month };
+  };
+
   return (
     <div className="min-h-screen w-full bg-transparent text-white relative overflow-hidden">
       <div className="container mx-auto px-4 py-20">
-      <Heading text="EVENTS" />
+        <Heading text="EVENTS" />
         <motion.div 
           ref={ref} 
           initial="hidden" 
@@ -46,19 +52,22 @@ export default function EventPage() {
           variants={containerVariants} 
           className="flex flex-wrap justify-center gap-28"
         >
-          {events.map((event) => (
-            <motion.div key={event.id} variants={cardVariants}>
-              <Link href={`/events/${event.id}`}>
-                <EventCard 
-                  title={event.title} 
-                  subtitle={event.subtitle} 
-                  dates={event.date} 
-                  month={event.month} 
-                  imageId={event.imageId} 
-                />
-              </Link>
-            </motion.div>
-          ))}
+          {events.map((event) => {
+            const { dates, month } = formatSchedule(event.schedule);
+            return (
+              <motion.div key={event.name} variants={cardVariants}>
+                <Link href={`/events/${encodeURIComponent(event.name.toLowerCase())}`}>
+                  <EventCard 
+                    title={event.name}
+                    subtitle={event.description}
+                    dates={dates}
+                    month={month}
+                    imageId={event.imagePath}
+                  />
+                </Link>
+              </motion.div>
+            );
+          })}
         </motion.div>
       </div>
     </div>

@@ -3,12 +3,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { EventData } from '@/lib/events';
+import { Event } from '@/lib/events';
 import { useState, useEffect } from 'react';
 import { Wrapper } from '../common/Wrapper';
 
 interface EventDetailsProps {
-  eventData: EventData;
+  eventData: Event;
 }
 
 const eventIcons: Record<string, string> = {
@@ -70,11 +70,11 @@ export default function EventDetails({ eventData }: EventDetailsProps) {
     <Wrapper>
       <div className="min-h-screen w-full mt-14 text-white flex flex-col items-center py-16 px-4 relative">
         {/* Dynamic SVG Icon */}
-        {!isLoading && eventIcons[eventData.title] && (
+        {!isLoading && eventIcons[eventData.name] && (
           <div className="absolute -top-20 left-16 w-[28rem] h-[28rem]">
             <Image 
-              src={eventIcons[eventData.title]} 
-              alt={eventData.title} 
+              src={eventIcons[eventData.name]} 
+              alt={eventData.name} 
               width={512} 
               height={256} 
             />
@@ -85,30 +85,30 @@ export default function EventDetails({ eventData }: EventDetailsProps) {
           <SkeletonLoader />
         ) : (
           <>
-            <h1 className="text-3xl font-bold font-got mb-6">{eventData.title}</h1>
+            <h1 className="text-3xl font-bold font-got mb-6">{eventData.name}</h1>
             
             <div className="relative w-[28rem] h-[30rem] mb-6">
               <Image 
-                src={`/images/${eventData.imageId}.png`} 
-                alt={eventData.title} 
+                src={`/images/${eventData.imagePath}.png`} 
+                alt={eventData.name} 
                 layout="fill"
                 className="object-fit rounded-lg" 
               />
             </div>
             
             <div className="space-y-3 font-bold">
-              <p className="text-2xl">Registration Fee: {eventData.registrationFee}</p>
-              <p className="text-2xl">Date: {eventData.date} {eventData.month}</p>
+              <p className="text-2xl">Registration Fee: {eventData.price}</p>
+              <p className="text-2xl">Schedule: {eventData.schedule}</p>
               <h2 className="text-2xl font-semibold mb-3">Coordinators:</h2>
               <ul className="space-y-2 text-xl">
                 {eventData.coordinators.map((coordinator, index) => (
-                  <li key={index} className="text-gray-300">{coordinator}</li>
+                  <li key={index} className="text-gray-300">{coordinator.name} - {coordinator.phone}</li>
                 ))}
               </ul>
-              <p className="text-3xl">Prize Pool: {eventData.prizePool}</p>
+              <p className="text-3xl">Prize Pool: {eventData.prize}</p>
               <br />
-              <p>Rules: </p>
-              <p>Enter rules here pls</p>
+              <p>Rules:</p>
+              <p>{eventData.rules}</p>
             </div>
             
             <div className="flex gap-4 mt-8">

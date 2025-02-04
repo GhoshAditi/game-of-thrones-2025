@@ -1,95 +1,66 @@
-export interface EventData {
-    id: string;
-    title: string;
-    subtitle: string;
-    date: string;
-    month: string;
-    registrationFee: string;
-    prizePool: string;
-    coordinators: string[];
-    imageId: string;
+export interface Link {
+  title: string;
+  url: string;
+}
+
+export interface Coordinator {
+  name: string;
+  phone: string;
+}
+
+export interface Event {
+  name: string;
+  price: string;
+  prize: string;
+  imagePath: string;
+  minTeamSize: number;
+  maxTeamSize: number;
+  schedule: string;
+  description: string;
+  rules: string;
+  coordinators: Coordinator[];
+  links: Link[];
+}
+
+export const events: Event[] = [
+  {
+    name: "BADMINTON",
+    price: "₹500/- (Team)",
+    prize: "₹5000/-",
+    imagePath: "BADMINTON",
+    minTeamSize: 1,
+    maxTeamSize: 2,
+    schedule: "14TH-15TH FEBRUARY 2025",
+    description: "A thrilling badminton tournament for all skill levels.",
+    rules: "Standard badminton rules apply.",
+    coordinators: [
+      { name: "John Doe", phone: "1234567890" },
+      { name: "Jane Smith", phone: "9876543210" }
+    ],
+    links: [
+      { title: "Registration", url: "https://example.com/badminton" }
+    ]
+  },
+  {
+    name: "CRICKET",
+    price: "₹700/- (Team)",
+    prize: "₹7000/-",
+    imagePath: "CRICKET",
+    minTeamSize: 7,
+    maxTeamSize: 11,
+    schedule: "14TH-15TH FEBRUARY 2025",
+    description: "A competitive cricket tournament for teams.",
+    rules: "ICC standard rules apply.",
+    coordinators: [
+      { name: "Rahul Sharma", phone: "1122334455" },
+      { name: "Amit Verma", phone: "5566778899" }
+    ],
+    links: [
+      { title: "Registration", url: "https://example.com/cricket" }
+    ]
   }
-  
-  export const events: EventData[] = [
-    {
-      id: 'BADMINTON',
-      title: 'BADMINTON',
-      subtitle: 'TOURNAMENT',
-      date: '14TH 15TH',
-      month: 'FEBRUARY 2025',
-      registrationFee: '₹500/- (Team)',
-      prizePool: '₹5000/-',
-      coordinators: ['John Doe', 'Jane Smith'],
-      imageId: 'BADMINTON',
-    },
-    {
-        id: 'CRICKET',
-        title: 'CRICKET',
-        subtitle: 'TOURNAMENT',
-        date: '14TH 15TH',
-        month: 'FEBRUARY 2025',
-        registrationFee: '₹700/- (Team)',
-        prizePool: '₹7000/-',
-        coordinators: ['Rahul Sharma', 'Amit Verma'],
-        imageId: 'CRICKET',
-      },
-    {
-      id: 'FOOTBALL',
-      title: 'FOOTBALL',
-      subtitle: 'TOURNAMENT',
-      date: '14TH 15TH',
-      month: 'FEBRUARY 2025',
-      registrationFee: '₹1000/- (Team)',
-      prizePool: '₹10000/-',
-      coordinators: ['Alex Johnson', 'Emily Davis'],
-      imageId: 'FOOTBALL',
-    },
-    {
-      id: 'CHESS',
-      title: 'CHESS',
-      subtitle: 'TOURNAMENT',
-      date: '14TH 15TH',
-      month: 'FEBRUARY 2025',
-      registrationFee: '₹200/- (Individual)',
-      prizePool: '₹2000/-',
-      coordinators: ['Mark Taylor', 'Sophia Wilson'],
-      imageId: 'CHESS',
-    },
-    {
-      id: 'TUGOFWAR',
-      title: 'TUG OF WAR',
-      subtitle: 'TOURNAMENT',
-      date: '14TH 15TH',
-      month: 'FEBRUARY 2025',
-      registrationFee: '₹600/- (Team)',
-      prizePool: '₹6000/-',
-      coordinators: ['Chris Brown', 'Laura Green'],
-      imageId: 'TUG-OF-WAR',
-    },
-    {
-      id: 'HANDBALL',
-      title: 'HANDBALL',
-      subtitle: 'TOURNAMENT',
-      date: '14TH 15TH',
-      month: 'FEBRUARY 2025',
-      registrationFee: '₹800/- (Team)',
-      prizePool: '₹8000/-',
-      coordinators: ['Michael Scott', 'Pam Beesly'],
-      imageId: 'HANDBALL',
-    },
-    {
-      id: 'KABADDI',
-      title: 'KABADDI',
-      subtitle: 'TOURNAMENT',
-      date: '14TH 15TH',
-      month: 'FEBRUARY 2025',
-      registrationFee: '₹700/- (Team)',
-      prizePool: '₹7000/-',
-      coordinators: ['Rahul Sharma', 'Amit Verma'],
-      imageId: 'KABADDI',
-    },
-  ];
-  
-  export const getEventById = (id: string) => {
-    return events.find(event => event.id === id);
-  };
+];
+
+export const getEventByName = (name: string) => {
+  return events.find(event => event.name === name);
+};

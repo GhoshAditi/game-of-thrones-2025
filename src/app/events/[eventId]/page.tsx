@@ -1,11 +1,11 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { events, getEventById } from '@/lib/events';
+import { events, getEventByName } from '@/lib/events';
 import EventDetails from '@/components/events/EventDetails';
 
 export function generateStaticParams() {
   return events.map((event) => ({
-    eventId: event.id,
+    eventId: event.name.toLowerCase(),
   }));
 }
 
@@ -14,10 +14,10 @@ export function generateMetadata({
 }: { 
   params: { eventId: string } 
 }): Metadata {
-  const eventData = getEventById(params.eventId);
+  const eventData = getEventByName(decodeURIComponent(params.eventId).toUpperCase());
   return {
-    title: eventData ? `${eventData.title} - Events` : 'Event Not Found',
-    description: eventData ? `Details for ${eventData.title}` : ''
+    title: eventData ? `${eventData.name} - Events` : 'Event Not Found',
+    description: eventData ? `Details for ${eventData.name}` : ''
   };
 }
 
@@ -26,7 +26,7 @@ export default function EventDetailsPage({
 }: { 
   params: { eventId: string } 
 }) {
-  const eventData = getEventById(params.eventId);
+  const eventData = getEventByName(decodeURIComponent(params.eventId).toUpperCase());
 
   if (!eventData) {
     notFound();
