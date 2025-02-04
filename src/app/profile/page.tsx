@@ -75,7 +75,9 @@ export default function ProfilePage() {
             <Button className="bg-[#FFD700] text-black hover:bg-[#FFD700]/90">Save Changes</Button>
           </div>
         </DialogContent>
+        
       </Dialog>
+
     </div>
   )
 }
