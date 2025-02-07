@@ -1,12 +1,24 @@
-import { supabase } from "./supabase-client";
+import { createServerClient } from "./supabase-server"
+import { events } from '@/lib/types';
 
-export async function getEventByName(name: string): Promise<Event | null> {
-    const { data, error } = await supabase
-        .from('events')
-        .select('*')
-        .eq('name', name)
-        .single();
 
-    if (error) throw error;
-    return data;
-}
+const getEventByName = async (name: string): Promise<events | null> => {
+    const supabaseServer = createServerClient();
+    const p_event_name = name;
+
+    const { data, error } = await supabaseServer.rpc('get_event_by_name_with_registration', {
+        p_event_name
+    });
+
+    if (error) {
+        console.error('Error fetching event:', error);
+        return null;
+    }
+
+    console.log('Event data:', data);   
+
+    // Return the first result, since the RPC returns a table (array)
+    return data && data.length > 0 ? data[0] : null;
+};
+
+export { getEventByName };

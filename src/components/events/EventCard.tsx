@@ -4,22 +4,17 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import styles from './EventCard.module.css';
 import Image from 'next/image';
+import parse from "html-react-parser";
+import { handleMixedFonts } from '@/utils/functions/handleMixedfont';
 
 interface EventCardProps {
   title: string;
   subtitle: string;
-  dates: string;
-  month: string;
-  imageId: string;
+  schedule: string;
+  image_url: string;
 }
 
-const EventCard: React.FC<EventCardProps> = ({
-  title,
-  subtitle,
-  dates,
-  month,
-  imageId,
-}) => {
+const EventCard: React.FC<EventCardProps> = ({ title, subtitle, schedule, image_url }) => {
   const [isActive, setIsActive] = useState(false);
 
   return (
@@ -28,14 +23,14 @@ const EventCard: React.FC<EventCardProps> = ({
       onTouchStart={() => setIsActive(!isActive)}
     >
       <div className={`${styles.cardContent} relative h-full w-full`}>
-        <div 
+        <div
           className={`${styles.cardBackground} absolute inset-0 bg-cover bg-center`}
-          style={{ backgroundImage: `url(/images/${imageId}.png)` }}
+          style={{ backgroundImage: `url(${image_url})` }}
         />
         <div className={`${styles.content} ${isActive ? styles.active : ''} absolute inset-0 p-6 pb-14 flex flex-col justify-end bg-gradient-to-t from-black/80 to-transparent`}>
-          <h2 className="text-white text-xl font-sargento mb-2">{title}</h2>
-          <p className="text-gray-300 text-sm">{subtitle}</p>
-          <p className="text-gray-400 text-xs">{dates} {month}</p>
+          <h2 className="text-white text-xl font-sargento mb-2">{handleMixedFonts(title)}</h2>
+          <p className="text-gray-300 text-sm line-clamp-2">{parse(subtitle)}</p>
+          <p className="text-gray-400 text-xs">{parse(schedule)}</p>
           <div className="mt-4 px-6 py-2 bg-purple-600 text-white font-bold rounded-md transition-all duration-300 ease-in-out hover:bg-purple-700">
             View Details
           </div>

@@ -15,11 +15,11 @@ import { Coordinator, Link } from "@/lib/types/events"
 
 const formSchema = z.object({
   name: z.string().min(2, "Event name must be at least 2 characters"),
-  price: z.string(),
-  prize: z.string(),
-  imagePath: z.string().url("Please enter a valid image URL"),
-  minTeamSize: z.coerce.number().min(1, "Minimum team size must be at least 1"),
-  maxTeamSize: z.coerce.number().min(1, "Maximum team size must be at least 1"),
+  registration_fees: z.string(),
+  prize_pool: z.string(),
+  image_url: z.string().url("Please enter a valid image URL"),
+  min_team_size: z.coerce.number().min(1, "Minimum team size must be at least 1"),
+  max_team_size: z.coerce.number().min(1, "Maximum team size must be at least 1"),
   schedule: z.string(),
   description: z.string(),
   rules: z.string(),
@@ -35,8 +35,7 @@ const formSchema = z.object({
       url: z.string().url(),
     })
   ).optional(),
-});
-
+})
 
 export default function AddEventPage() {
   const [links, setLinks] = useState<Link[]>([])
@@ -45,11 +44,11 @@ export default function AddEventPage() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      price: "",
-      prize: "",
-      imagePath: "",
-      minTeamSize: 1,
-      maxTeamSize: 1,
+      registration_fees: "",
+      prize_pool: "",
+      image_url: "",
+      min_team_size: 1,
+      max_team_size: 1,
       schedule: "",
       description: "",
       rules: "",
@@ -60,21 +59,20 @@ export default function AddEventPage() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      console.log(values)
-      console.log("submitting")
       const eventData = {
         ...values,
-        minTeamSize: Number(values.minTeamSize),
-        maxTeamSize: Number(values.maxTeamSize),
+        min_team_size: Number(values.min_team_size),
+        max_team_size: Number(values.max_team_size),
         links: links,
         coordinators: coordinators,
       }
-      console.log(eventData)
       await addEvent(eventData)
-      console.log("submitted")
       toast.success("Event created!")
-    } catch (error) {
-      toast.error("Failed to create event.")
+      form.reset() // Clears the form fields
+      setLinks([]) // Resets links
+      setCoordinators([]) // Resets coordinators
+    } catch (error: any) {
+      toast.error("Failed to create event. " + error.message)
     }
   }
 
@@ -114,4 +112,3 @@ export default function AddEventPage() {
     </div>
   )
 }
-
