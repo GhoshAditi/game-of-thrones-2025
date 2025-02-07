@@ -15,7 +15,6 @@ const getEventByName = async (name: string): Promise<events | null> => {
         return null;
     }
 
-    console.log('Event data:', data);   
 
     // Return the first result, since the RPC returns a table (array)
     return data && data.length > 0 ? data[0] : null;

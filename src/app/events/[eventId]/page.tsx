@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import EventDetails from '@/components/events/EventDetails';
 import { getEventByName } from '@/utils/functions/getEvent';
 
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params

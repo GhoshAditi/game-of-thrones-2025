@@ -8,6 +8,7 @@ export interface userDataType {
   created_at: string;
   updated_at: string;
   deleted_at: string;
+  gender: string;
 }
 
 export interface userStateType {
@@ -17,4 +18,6 @@ export interface userStateType {
 
 export interface userActionsType {
   setUserData: () => void;
+  updateUserData: (data: any) => void;
+
 }

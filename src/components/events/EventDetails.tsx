@@ -22,24 +22,23 @@ import { cn } from "@/lib/utils";
  * might produce. Feel free to adjust these to your design needs.
  */
 const quillStyles: Record<string, string> = {
-  p: "mb-4 text-base text-white",
+  p: "mb-4 text-base text-gray-100 font-medium",
   h1: "mt-6 mb-2 text-3xl font-bold text-white",
   h2: "mt-5 mb-2 text-2xl font-bold text-white",
   h3: "mt-4 mb-2 text-xl font-bold text-white",
   h4: "mt-3 mb-2 text-lg font-bold text-white",
   h5: "mt-2 mb-2 text-base font-bold text-white",
   h6: "mt-1 mb-2 text-sm font-bold text-white",
-  strong: "font-bold text-purple-400",
-  em: "italic",
-  u: "underline",
-  a: "text-blue-400 hover:underline",
-  blockquote:
-    "border-l-4 border-gray-500 pl-4 italic text-gray-300 my-4",
+  strong: "font-bold !text-purple-300",
+  em: "italic text-gray-100",
+  u: "underline text-gray-100",
+  a: "text-purple-300 hover:underline hover:text-purple-200",
+  blockquote: "border-l-4 border-purple-400 pl-4 italic text-gray-100 my-4",
   ul: "list-disc pl-6 mb-4 space-y-2",
   ol: "list-decimal pl-6 mb-4 space-y-2",
-  li: "text-gray-300",
-  pre: "bg-gray-800 p-4 rounded text-sm overflow-x-auto my-4",
-  code: "bg-gray-900 px-1 py-0.5 rounded text-sm font-mono",
+  li: "text-gray-100",
+  pre: "bg-gray-800 p-4 rounded text-sm overflow-x-auto my-4 text-gray-100",
+  code: "bg-gray-800 px-1 py-0.5 rounded text-sm font-mono text-purple-300",
   img: "max-w-full h-auto my-4",
 };
 
@@ -150,6 +149,8 @@ export default function EventDetails({ eventname }: { eventname: string }) {
               alt={eventData.name}
               width={512}
               height={256}
+              loading="lazy"
+              placeholder="blur"
             />
           </div>
         )}
@@ -185,6 +186,24 @@ export default function EventDetails({ eventname }: { eventname: string }) {
           <br />
           <p>Description:</p>
           <div>{parseWithQuillStyles(eventData.description)}</div>
+
+          {/* If the event has any links, display them as buttons */}
+          {eventData.links && eventData.links.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-4">
+              {eventData.links.map((link, index) => (
+                <Link
+                  key={index}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button variant="outline" className="px-6 text-black">
+                    {link.title}
+                  </Button>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Actions */}
@@ -203,9 +222,11 @@ export default function EventDetails({ eventname }: { eventname: string }) {
             </DialogTrigger>
             <DialogContent className="bg-zinc-900 text-white border-zinc-800 max-w-4xl max-h-[80vh]">
               <DialogHeader>
-                <DialogTitle className="text-2xl font-got">Rules</DialogTitle>
+                <DialogTitle className="text-2xl font-got !tracking-widest">
+                  Rules
+                </DialogTitle>
               </DialogHeader>
-              <div className="mt-4 overflow-y-auto p-4">
+              <div className="mt-4 overflow-y-auto p-4 max-h-[60vh] pr-6 my-scrollbar">
                 {parseWithQuillStyles(eventData.rules)}
               </div>
             </DialogContent>
