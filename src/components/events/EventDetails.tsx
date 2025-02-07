@@ -6,62 +6,13 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { Wrapper } from "../common/Wrapper";
 import { useEvents } from "@/lib/stores";
-import parse from "html-react-parser";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import type { events } from "@/lib/types/events";
-import { cn } from "@/lib/utils";
+import { RulesDialog } from "./RulesDialog";
+import { parseWithQuillStyles } from "@/utils/functions/quilParser";
+import { EventRegistrationDialog } from "./EventRegistrationDialog";
+import { TeamEventRegistration } from "./TeamEventRegitration";
 
-/**
- * Tailwind classes for all HTML elements that the Quill editor (or similar)
- * might produce. Feel free to adjust these to your design needs.
- */
-const quillStyles: Record<string, string> = {
-  p: "mb-4 text-base text-gray-100 font-medium",
-  h1: "mt-6 mb-2 text-3xl font-bold text-white",
-  h2: "mt-5 mb-2 text-2xl font-bold text-white",
-  h3: "mt-4 mb-2 text-xl font-bold text-white",
-  h4: "mt-3 mb-2 text-lg font-bold text-white",
-  h5: "mt-2 mb-2 text-base font-bold text-white",
-  h6: "mt-1 mb-2 text-sm font-bold text-white",
-  strong: "font-bold !text-purple-300",
-  em: "italic text-gray-100",
-  u: "underline text-gray-100",
-  a: "text-purple-300 hover:underline hover:text-purple-200",
-  blockquote: "border-l-4 border-purple-400 pl-4 italic text-gray-100 my-4",
-  ul: "list-disc pl-6 mb-4 space-y-2",
-  ol: "list-decimal pl-6 mb-4 space-y-2",
-  li: "text-gray-100",
-  pre: "bg-gray-800 p-4 rounded text-sm overflow-x-auto my-4 text-gray-100",
-  code: "bg-gray-800 px-1 py-0.5 rounded text-sm font-mono text-purple-300",
-  img: "max-w-full h-auto my-4",
-};
 
-/**
- * parseWithQuillStyles is a helper function that uses html-react-parser
- * to traverse the provided HTML string and apply consistent Tailwind CSS classes
- * to supported tags.
- */
-const parseWithQuillStyles = (html: string) => {
-  return parse(html, {
-    replace: (domNode: any) => {
-      if (domNode.type === "tag") {
-        const tagName = domNode.name.toLowerCase();
-        if (quillStyles[tagName]) {
-          const existingClass = domNode.attribs?.class || "";
-          const newClass = cn(existingClass, quillStyles[tagName]);
-          domNode.attribs = { ...domNode.attribs, class: newClass };
-          return domNode;
-        }
-      }
-    },
-  });
-};
 
 const eventIcons: Record<string, string> = {
   CRICKET: "/icons/cricket.svg",
@@ -102,6 +53,7 @@ export default function EventDetails({ eventname }: { eventname: string }) {
   const [isLoading, setIsLoading] = useState(true);
   const { eventsData, eventsLoading } = useEvents();
   const [eventData, setEventData] = useState<events | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     if (!eventsLoading && eventsData.length > 0) {
@@ -162,6 +114,7 @@ export default function EventDetails({ eventname }: { eventname: string }) {
             src={eventData.image_url || "/placeholder.svg"}
             alt={eventData.name}
             layout="fill"
+            loading="lazy"
             className="object-fit rounded-lg"
           />
         </div>
@@ -214,23 +167,20 @@ export default function EventDetails({ eventname }: { eventname: string }) {
             </Button>
           </Link>
 
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button className="px-6 bg-purple-600 hover:bg-purple-700">
-                View Rules
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="bg-zinc-900 text-white border-zinc-800 max-w-4xl max-h-[80vh]">
-              <DialogHeader>
-                <DialogTitle className="text-2xl font-got !tracking-widest">
-                  Rules
-                </DialogTitle>
-              </DialogHeader>
-              <div className="mt-4 overflow-y-auto p-4 max-h-[60vh] pr-6 my-scrollbar">
-                {parseWithQuillStyles(eventData.rules)}
-              </div>
-            </DialogContent>
-          </Dialog>
+          <RulesDialog rules={eventData.rules} />
+          <EventRegistrationDialog isOpen={true} onClose={() => {
+            console.log("Closed");
+          }}
+            eventName={eventData.name}
+          />
+          <TeamEventRegistration isOpen={false} onClose={() => {
+            console.log("Closed");
+          }}
+            eventName={eventData.name}
+            minTeamSize={Number(eventData.min_team_size)}
+            maxTeamSize={Number(eventData.max_team_size)}
+          />
+
 
           <Button
             onClick={handleRegister}
