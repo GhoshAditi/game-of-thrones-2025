@@ -14,6 +14,7 @@ import { TeamEventRegistration } from "./TeamEventRegitration";
 
 
 
+
 const eventIcons: Record<string, string> = {
   CRICKET: "/icons/cricket.svg",
   BADMINTON: "/icons/badminton.svg",
@@ -49,11 +50,11 @@ const SkeletonLoader = () => (
 );
 
 export default function EventDetails({ eventname }: { eventname: string }) {
-  const [isRegistering, setIsRegistering] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const { eventsData, eventsLoading } = useEvents();
   const [eventData, setEventData] = useState<events | null>(null);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isSoloOpen, setIsSoloOpen] = useState(false);
+  const [isTeamOpen, setIsTeamOpen] = useState(false);
 
   useEffect(() => {
     if (!eventsLoading && eventsData.length > 0) {
@@ -68,11 +69,12 @@ export default function EventDetails({ eventname }: { eventname: string }) {
   }, [eventsData, eventsLoading, eventname]);
 
   const handleRegister = () => {
-    setIsRegistering(true);
-    setTimeout(() => {
-      setIsRegistering(false);
-      alert("Registration successful!"); // Replace with your actual registration handling
-    }, 1500);
+    if (eventData?.max_team_size === 1) {
+      setIsSoloOpen(true);
+    }
+    else {
+      setIsTeamOpen(true);
+    }
   };
 
   if (isLoading || !eventData) {
@@ -168,13 +170,13 @@ export default function EventDetails({ eventname }: { eventname: string }) {
           </Link>
 
           <RulesDialog rules={eventData.rules} />
-          <EventRegistrationDialog isOpen={true} onClose={() => {
-            console.log("Closed");
+          <EventRegistrationDialog isOpen={isSoloOpen} onClose={() => {
+            setIsSoloOpen(false);
           }}
             eventName={eventData.name}
           />
-          <TeamEventRegistration isOpen={false} onClose={() => {
-            console.log("Closed");
+          <TeamEventRegistration isOpen={isTeamOpen} onClose={() => {
+            setIsTeamOpen(false);
           }}
             eventName={eventData.name}
             minTeamSize={Number(eventData.min_team_size)}
@@ -184,14 +186,12 @@ export default function EventDetails({ eventname }: { eventname: string }) {
 
           <Button
             onClick={handleRegister}
-            disabled={isRegistering || eventData.registered}
+            disabled={eventData.registered}
             className="px-6 bg-purple-600 hover:bg-purple-700"
           >
             {eventData.registered
               ? "Registered"
-              : isRegistering
-                ? "Registering..."
-                : "Register Now"}
+              : "Register Now"}
           </Button>
         </div>
       </div>

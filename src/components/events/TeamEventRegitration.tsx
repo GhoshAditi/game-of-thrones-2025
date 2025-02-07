@@ -13,13 +13,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
-import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
-} from "@/components/ui/sheet";
+import { ViewTeamMembers } from "./ViewteamMembers"; // adjust the import path as needed
+import { useUser } from "@/lib/stores";
 
 interface EventRegistrationDialogProps {
     isOpen: boolean;
@@ -65,14 +60,19 @@ export function TeamEventRegistration({
     minTeamSize,
     maxTeamSize,
 }: EventRegistrationDialogProps) {
+
+    const { userData } = useUser();
+    // User store for checking if user is logged in
     // step: 1 = Team Lead, 2 = Manage Team Members, 3 = Payment Details
     const [step, setStep] = useState(1);
     // Store validated team lead details
     const [teamLeadData, setTeamLeadData] = useState<TeamLeadFormValues | null>(null);
     // Store added team members
     const [teamMembers, setTeamMembers] = useState<TeamMemberFormValues[]>([]);
-    // For displaying the added team members via a side sheet
+    // For displaying the added team members via the ViewTeamMembers component
     const [isSheetOpen, setIsSheetOpen] = useState(false);
+    // Toggle for showing the add team member form
+    const [isAddingMember, setIsAddingMember] = useState(false);
 
     // ----------- Step 1: Team Lead Form -----------
     const {
@@ -103,6 +103,7 @@ export function TeamEventRegistration({
     const onAddTeamMember = (data: TeamMemberFormValues) => {
         setTeamMembers((prev) => [...prev, data]);
         resetTeamMember();
+        setIsAddingMember(false);
     };
 
     // Total team count (team lead is counted if teamLeadData is set)
@@ -151,18 +152,18 @@ export function TeamEventRegistration({
                     <DialogTitle className="text-white text-2xl">
                         Registration for {eventName}
                     </DialogTitle>
-                    <p className="text-gray-400 mt-2">
-                        Team Members: {totalTeamCount} (Min: {minTeamSize}, Max: {maxTeamSize})
-                    </p>
-                    {teamMembers.length > 0 && (
-                        <span
-                            className="text-[#8B5CF6] cursor-pointer hover:underline"
-                            onClick={() => setIsSheetOpen(true)}
-                        >
-                            View Added Members
-                        </span>
-                    )}
                 </DialogHeader>
+                <p className="text-gray-400 mt-2">
+                    Team Members: {totalTeamCount} (Min: {minTeamSize}, Max: {maxTeamSize})
+                </p>
+                {teamMembers.length > 0 && (
+                    <span
+                        className="text-[#8B5CF6] cursor-pointer hover:underline"
+                        onClick={() => setIsSheetOpen(true)}
+                    >
+                        View Added Members
+                    </span>
+                )}
 
                 {/* Step 1: Team Lead Details */}
                 {step === 1 && (
@@ -180,6 +181,7 @@ export function TeamEventRegistration({
                                     {...registerTeamLead("name")}
                                     className="bg-black border border-gray-500 focus:border-[#8B5CF6] focus:outline-none text-white rounded-md"
                                     placeholder="Enter team lead name"
+                                    defaultValue={userData?.name}
                                 />
                                 {teamLeadErrors.name && (
                                     <p className="text-red-500 text-sm">{teamLeadErrors.name.message}</p>
@@ -192,6 +194,7 @@ export function TeamEventRegistration({
                                 <Input
                                     id="phone"
                                     type="tel"
+                                    defaultValue={userData?.phone}
                                     {...registerTeamLead("phone")}
                                     className="bg-black border border-gray-500 focus:border-[#8B5CF6] focus:outline-none text-white rounded-md"
                                     placeholder="Enter team lead phone number"
@@ -207,9 +210,11 @@ export function TeamEventRegistration({
                                 <Input
                                     id="email"
                                     type="email"
+                                    defaultValue={userData?.email}
                                     {...registerTeamLead("email")}
                                     className="bg-black border border-gray-500 focus:border-[#8B5CF6] focus:outline-none text-white rounded-md"
                                     placeholder="Enter team lead email"
+                                    readOnly
                                 />
                                 {teamLeadErrors.email && (
                                     <p className="text-red-500 text-sm">{teamLeadErrors.email.message}</p>
@@ -230,7 +235,16 @@ export function TeamEventRegistration({
                                 )}
                             </div>
                         </div>
-                        <div className="flex justify-end gap-4 mt-4">
+                        {/* Bottom buttons arranged side by side */}
+                        <div className="flex justify-end gap-4">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={onClose}
+                                className="bg-white text-black hover:bg-white/90 border-0"
+                            >
+                                Close
+                            </Button>
                             <Button
                                 type="submit"
                                 className="bg-[#8B5CF6] text-white hover:bg-[#8B5CF6]/90 border-0"
@@ -243,125 +257,122 @@ export function TeamEventRegistration({
 
                 {/* Step 2: Manage Team Members */}
                 {step === 2 && (
-                    <div className="overflow-y-auto max-h-[65vh] my-scrollbar">
+                    <div className="overflow-y-auto my-scrollbar max-h-[65vh]">
                         {teamMembers.length > 0 && (
-                            <div className="mb-4">
-                                <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-                                    <SheetContent
-                                        side="right"
-                                        className="bg-black border-l border-[#8B5CF6] w-[400px] sm:w-[540px]"
-                                    >
-                                        <SheetHeader>
-                                            <SheetTitle className="text-white">Added Team Members</SheetTitle>
-                                            <SheetDescription className="text-gray-400">
-                                                Total members: {teamMembers.length}
-                                            </SheetDescription>
-                                        </SheetHeader>
-                                        <div className="mt-6">
-                                            {teamMembers.map((member, index) => (
-                                                <div key={index} className="mb-4 p-4 bg-gray-900 rounded-lg">
-                                                    <p className="text-white font-semibold">{member.name}</p>
-                                                    <p className="text-gray-400">{member.email}</p>
-                                                    <p className="text-gray-400">{member.phone}</p>
-                                                    <p className="text-gray-400">{member.collegeName}</p>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </SheetContent>
-                                </Sheet>
-                            </div>
+                            <ViewTeamMembers
+                                isOpen={isSheetOpen}
+                                onOpenChange={setIsSheetOpen}
+                                teamMembers={teamMembers}
+                            />
                         )}
 
-                        <form
-                            onSubmit={handleTeamMemberSubmit(onAddTeamMember)}
-                            className="grid gap-6 py-4"
-                        >
-                            <div className="grid gap-2">
-                                <label htmlFor="memberName" className="text-white">
-                                    Team Member Name
-                                </label>
-                                <Input
-                                    id="memberName"
-                                    {...registerTeamMember("name")}
-                                    className="bg-black border border-gray-500 focus:border-[#8B5CF6] focus:outline-none text-white rounded-md"
-                                    placeholder="Enter team member name"
-                                />
-                                {teamMemberErrors.name && (
-                                    <p className="text-red-500 text-sm">{teamMemberErrors.name.message}</p>
-                                )}
-                            </div>
-                            <div className="grid gap-2">
-                                <label htmlFor="memberPhone" className="text-white">
-                                    Team Member Phone
-                                </label>
-                                <Input
-                                    id="memberPhone"
-                                    type="tel"
-                                    {...registerTeamMember("phone")}
-                                    className="bg-black border border-gray-500 focus:border-[#8B5CF6] focus:outline-none text-white rounded-md"
-                                    placeholder="Enter team member phone number"
-                                />
-                                {teamMemberErrors.phone && (
-                                    <p className="text-red-500 text-sm">{teamMemberErrors.phone.message}</p>
-                                )}
-                            </div>
-                            <div className="grid gap-2">
-                                <label htmlFor="memberEmail" className="text-white">
-                                    Team Member Email
-                                </label>
-                                <Input
-                                    id="memberEmail"
-                                    type="email"
-                                    {...registerTeamMember("email")}
-                                    className="bg-black border border-gray-500 focus:border-[#8B5CF6] focus:outline-none text-white rounded-md"
-                                    placeholder="Enter team member email"
-                                />
-                                {teamMemberErrors.email && (
-                                    <p className="text-red-500 text-sm">{teamMemberErrors.email.message}</p>
-                                )}
-                            </div>
-                            <div className="grid gap-2">
-                                <label htmlFor="memberCollegeName" className="text-white">
-                                    College Name
-                                </label>
-                                <Input
-                                    id="memberCollegeName"
-                                    {...registerTeamMember("collegeName")}
-                                    className="bg-black border border-gray-500 focus:border-[#8B5CF6] focus:outline-none text-white rounded-md"
-                                    placeholder="Enter college name"
-                                />
-                                {teamMemberErrors.collegeName && (
-                                    <p className="text-red-500 text-sm">{teamMemberErrors.collegeName.message}</p>
-                                )}
-                            </div>
-                            <div className="flex justify-end gap-4 mt-4">
+                        {isAddingMember ? (
+                            <form
+                                onSubmit={handleTeamMemberSubmit(onAddTeamMember)}
+                                className="grid gap-6 py-4"
+                            >
+                                <div className="grid gap-2">
+                                    <label htmlFor="memberName" className="text-white">
+                                        Team Member Name
+                                    </label>
+                                    <Input
+                                        id="memberName"
+                                        {...registerTeamMember("name")}
+                                        className="bg-black border border-gray-500 focus:border-[#8B5CF6] focus:outline-none text-white rounded-md"
+                                        placeholder="Enter team member name"
+                                    />
+                                    {teamMemberErrors.name && (
+                                        <p className="text-red-500 text-sm">{teamMemberErrors.name.message}</p>
+                                    )}
+                                </div>
+                                <div className="grid gap-2">
+                                    <label htmlFor="memberPhone" className="text-white">
+                                        Team Member Phone
+                                    </label>
+                                    <Input
+                                        id="memberPhone"
+                                        type="tel"
+                                        {...registerTeamMember("phone")}
+                                        className="bg-black border border-gray-500 focus:border-[#8B5CF6] focus:outline-none text-white rounded-md"
+                                        placeholder="Enter team member phone number"
+                                    />
+                                    {teamMemberErrors.phone && (
+                                        <p className="text-red-500 text-sm">{teamMemberErrors.phone.message}</p>
+                                    )}
+                                </div>
+                                <div className="grid gap-2">
+                                    <label htmlFor="memberEmail" className="text-white">
+                                        Team Member Email
+                                    </label>
+                                    <Input
+                                        id="memberEmail"
+                                        type="email"
+                                        {...registerTeamMember("email")}
+                                        className="bg-black border border-gray-500 focus:border-[#8B5CF6] focus:outline-none text-white rounded-md"
+                                        placeholder="Enter team member email"
+                                    />
+                                    {teamMemberErrors.email && (
+                                        <p className="text-red-500 text-sm">{teamMemberErrors.email.message}</p>
+                                    )}
+                                </div>
+                                <div className="grid gap-2">
+                                    <label htmlFor="memberCollegeName" className="text-white">
+                                        College Name
+                                    </label>
+                                    <Input
+                                        id="memberCollegeName"
+                                        {...registerTeamMember("collegeName")}
+                                        className="bg-black border border-gray-500 focus:border-[#8B5CF6] focus:outline-none text-white rounded-md"
+                                        placeholder="Enter college name"
+                                    />
+                                    {teamMemberErrors.collegeName && (
+                                        <p className="text-red-500 text-sm">{teamMemberErrors.collegeName.message}</p>
+                                    )}
+                                </div>
+                                <div className="flex flex-col sm:flex-row gap-4 mt-4">
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        onClick={() => setIsAddingMember(false)}
+                                        className="bg-white text-black hover:bg-white/90 border-0"
+                                    >
+                                        Back
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        className="bg-[#8B5CF6] text-white hover:bg-[#8B5CF6]/90 border-0"
+                                    >
+                                        Save
+                                    </Button>
+                                </div>
+                            </form>
+                        ) : (
+                            <div className="flex flex-col sm:flex-row gap-4 mt-4">
                                 <Button
-                                    type="submit"
+                                    type="button"
+                                    onClick={() => setIsAddingMember(true)}
                                     className="bg-[#8B5CF6] text-white hover:bg-[#8B5CF6]/90 border-0"
                                 >
-                                    Add Team Member
+                                    Add New Member
+                                </Button>
+                                <Button
+                                    type="button"
+                                    onClick={handleProceedToPayment}
+                                    className="bg-[#8B5CF6] text-white hover:bg-[#8B5CF6]/90 border-0"
+                                    disabled={totalTeamCount < minTeamSize || totalTeamCount > maxTeamSize}
+                                >
+                                    Make Payment
+                                </Button>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => setStep(1)}
+                                    className="bg-white text-black hover:bg-white/90 border-0"
+                                >
+                                    Back
                                 </Button>
                             </div>
-                        </form>
-
-                        <div className="flex justify-end gap-4 mt-4">
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => setStep(1)}
-                                className="bg-white text-black hover:bg-white/90 border-0"
-                            >
-                                Back
-                            </Button>
-                            <Button
-                                type="button"
-                                onClick={handleProceedToPayment}
-                                className="bg-[#8B5CF6] text-white hover:bg-[#8B5CF6]/90 border-0"
-                                disabled={totalTeamCount < minTeamSize || totalTeamCount > maxTeamSize}
-                            >
-                                Proceed to Payment
-                            </Button>
-                        </div>
+                        )}
                     </div>
                 )}
 
@@ -383,7 +394,9 @@ export function TeamEventRegistration({
                                     placeholder="Enter transaction ID"
                                 />
                                 {paymentErrors.transactionId && (
-                                    <p className="text-red-500 text-sm">{paymentErrors.transactionId.message}</p>
+                                    <p className="text-red-500 text-sm">
+                                        {paymentErrors.transactionId.message}
+                                    </p>
                                 )}
                             </div>
                             <div className="grid gap-2">
@@ -398,7 +411,9 @@ export function TeamEventRegistration({
                                     accept="image/*"
                                 />
                                 {paymentErrors.paymentScreenshot && (
-                                    <p className="text-red-500 text-sm">{String(paymentErrors.paymentScreenshot.message)}</p>
+                                    <p className="text-red-500 text-sm">
+                                        {String(paymentErrors.paymentScreenshot.message)}
+                                    </p>
                                 )}
                             </div>
                         </div>
@@ -411,7 +426,7 @@ export function TeamEventRegistration({
                                 className="rounded-lg"
                             />
                         </div>
-                        <div className="flex justify-end gap-4 mt-4">
+                        <div className="flex flex-col sm:flex-row gap-4 mt-4">
                             <Button
                                 type="button"
                                 variant="outline"

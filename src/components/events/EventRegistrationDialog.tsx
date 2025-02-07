@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
+import { useUser } from "@/lib/stores";
 
 // Define a schema for step one fields.
 const stepOneSchema = z.object({
@@ -54,6 +55,7 @@ export function EventRegistrationDialog({
     eventName,
 }: EventRegistrationDialogProps) {
     const [step, setStep] = useState(1);
+    const { userData } = useUser();
 
     const {
         register,
@@ -119,6 +121,7 @@ export function EventRegistrationDialog({
                                 <Input
                                     id="name"
                                     {...register("name")}
+                                    defaultValue={userData?.name}
                                     className="bg-black border border-gray-500 focus:border-[#8B5CF6] focus:outline-none text-white rounded-md"
                                     placeholder="Enter your name"
                                 />
@@ -133,6 +136,7 @@ export function EventRegistrationDialog({
                                 <Input
                                     id="phone"
                                     type="tel"
+                                    defaultValue={userData?.phone}
                                     {...register("phone")}
                                     className="bg-black border border-gray-500 focus:border-[#8B5CF6] focus:outline-none text-white rounded-md"
                                     placeholder="Enter your phone number"
@@ -147,6 +151,8 @@ export function EventRegistrationDialog({
                                 </label>
                                 <Input
                                     id="email"
+                                    defaultValue={userData?.email}
+                                    readOnly
                                     type="email"
                                     {...register("email")}
                                     className="bg-black border border-gray-500 focus:border-[#8B5CF6] focus:outline-none text-white rounded-md"
