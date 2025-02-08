@@ -3,13 +3,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useState} from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Wrapper } from "../common/Wrapper";
 import { useEvents } from "@/lib/stores";
 import { RulesDialog } from "./RulesDialog";
 import { parseWithQuillStyles } from "@/utils/functions/quilParser";
-import { EventRegistrationDialog } from "./EventRegistrationDialog";
+import { SoloEventRegistration } from "./EventRegistrationDialog";
 import { TeamEventRegistration } from "./TeamEventRegitration";
+import { useUser } from "@/lib/stores";
+import { login } from "@/utils/functions/auth/login";
 
 const eventIcons: Record<string, string> = {
   CRICKET: "/icons/cricket.svg",
@@ -49,6 +52,8 @@ export default function EventDetails({ eventname }: { eventname: string }) {
   const { eventsData, eventsLoading } = useEvents();
   const [isSoloOpen, setIsSoloOpen] = useState(false);
   const [isTeamOpen, setIsTeamOpen] = useState(false);
+  const { userData, userLoading } = useUser();
+  const router = useRouter();
 
   // Derive eventData directly from the hook data
   const eventData = eventsData.find(
@@ -66,7 +71,25 @@ export default function EventDetails({ eventname }: { eventname: string }) {
     );
   }
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
+    // Check if the user is logged in
+    if (!userData) {
+      await login();
+      return;
+    }
+
+    // Check if user's phone or name is missing or empty
+    if (
+      !userData.phone ||
+      !userData.name ||
+      userData.phone.trim() === "" ||
+      userData.name.trim() === ""
+    ) {
+      router.push("/profile?onboarding=true");
+      return;
+    }
+
+    // Proceed with registration based on the event type
     if (eventData.max_team_size === 1) {
       setIsSoloOpen(true);
     } else {
@@ -156,8 +179,9 @@ export default function EventDetails({ eventname }: { eventname: string }) {
           </Link>
 
           <RulesDialog rules={eventData.rules} />
-          <EventRegistrationDialog
+          <SoloEventRegistration
             isOpen={isSoloOpen}
+            eventID={eventData.id}
             onClose={() => setIsSoloOpen(false)}
             eventName={eventData.name}
           />
@@ -170,13 +194,15 @@ export default function EventDetails({ eventname }: { eventname: string }) {
             maxTeamSize={Number(eventData.max_team_size)}
           />
 
-          <Button
-            onClick={handleRegister}
-            disabled={eventData.registered}
-            className="px-6 bg-purple-600 hover:bg-purple-700"
-          >
-            {eventData.registered ? "Registered" : "Register Now"}
-          </Button>
+          {eventData.reg_status && (
+            <Button
+              onClick={handleRegister}
+              disabled={eventData.registered}
+              className="px-6 bg-purple-600 hover:bg-purple-700"
+            >
+              {eventData.registered ? "Registered" : "Register Now"}
+            </Button>
+          )}
         </div>
       </div>
     </Wrapper>

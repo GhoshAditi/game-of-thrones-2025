@@ -17,7 +17,7 @@ import { ViewTeamMembers } from "./ViewteamMembers";
 import { useUser } from "@/lib/stores";
 import { uploadPaymentScreenshot } from "@/utils/functions/supabaseUpload";
 import { toast } from "sonner";
-import { RegisterTeamParams, registerTeamWithParticipants } from "@/utils/functions/registerTeam";
+import { RegisterTeamParams, registerTeamWithParticipants } from "@/utils/functions/events/registerTeam";
 import { useEvents } from "@/lib/stores";
 
 interface EventRegistrationDialogProps {
@@ -30,7 +30,9 @@ interface EventRegistrationDialogProps {
 }
 
 // Zod schema for the Team Lead (Step 1)
+// Added a new field for teamName.
 const teamLeadSchema = z.object({
+    teamName: z.string().min(1, "Team name is required"),
     name: z.string().min(1, "Team lead name is required"),
     phone: z.string().min(1, "Team lead phone is required"),
     email: z.string().email("Invalid email"),
@@ -78,7 +80,6 @@ export function TeamEventRegistration({
     // Toggle for showing the add team member form
     const [isAddingMember, setIsAddingMember] = useState(false);
     // Payment screenshot URL (if upload succeeds)
-    const [paymentScreenshotUrl, setPaymentScreenshotUrl] = useState<string | null>(null);
 
     // ----------- Step 1: Team Lead Form -----------
     const {
@@ -107,6 +108,15 @@ export function TeamEventRegistration({
     });
 
     const onAddTeamMember = (data: TeamMemberFormValues) => {
+        // Validate duplicate email: check against already added team members and the team lead.
+        if (teamLeadData && teamLeadData.email === data.email) {
+            toast.error("Team member email cannot be the same as the team lead email.");
+            return;
+        }
+        if (teamMembers.some(member => member.email === data.email)) {
+            toast.error("This email has already been added as a team member.");
+            return;
+        }
         setTeamMembers((prev) => [...prev, data]);
         resetTeamMember();
         setIsAddingMember(false);
@@ -152,7 +162,7 @@ export function TeamEventRegistration({
             userId: userData?.id!, // non-null assertion since we expect this to be set
             eventId: eventID,
             transactionId: data.transactionId,
-            teamName: teamLeadData!.name,
+            teamName: teamLeadData!.teamName, // now using the separate team name field
             college: teamLeadData!.collegeName,
             transactionScreenshot: screenshotUrl,
             teamLeadName: teamLeadData!.name,
@@ -207,12 +217,28 @@ export function TeamEventRegistration({
                         className="overflow-y-auto my-scrollbar max-h-[65vh]"
                     >
                         <div className="grid gap-6 py-4">
+                            {/* New Team Name Field */}
+                            <div className="grid gap-2">
+                                <label htmlFor="teamName" className="text-white">
+                                    Team Name
+                                </label>
+                                <Input
+                                    id="teamName"
+                                    {...registerTeamLead("teamName")}
+                                    className="bg-black border border-gray-500 focus:border-[#8B5CF6] focus:outline-none text-white rounded-md"
+                                    placeholder="Enter your team name"
+                                />
+                                {teamLeadErrors.teamName && (
+                                    <p className="text-red-500 text-sm">{teamLeadErrors.teamName.message}</p>
+                                )}
+                            </div>
                             <div className="grid gap-2">
                                 <label htmlFor="name" className="text-white">
                                     Team Lead Name
                                 </label>
                                 <Input
                                     id="name"
+                                    readOnly
                                     {...registerTeamLead("name")}
                                     className="bg-black border border-gray-500 focus:border-[#8B5CF6] focus:outline-none text-white rounded-md"
                                     placeholder="Enter team lead name"
@@ -229,6 +255,7 @@ export function TeamEventRegistration({
                                 <Input
                                     id="phone"
                                     type="tel"
+                                    readOnly
                                     defaultValue={userData?.phone}
                                     {...registerTeamLead("phone")}
                                     className="bg-black border border-gray-500 focus:border-[#8B5CF6] focus:outline-none text-white rounded-md"

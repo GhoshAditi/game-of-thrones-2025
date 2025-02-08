@@ -1,5 +1,5 @@
-import { createServerClient } from "./supabase-server"
-import { events } from '@/lib/types';
+import { createServerClient } from "../supabase-server"
+import type { events } from '@/lib/types';
 
 
 const getEventByName = async (name: string): Promise<events | null> => {
@@ -21,3 +21,5 @@ const getEventByName = async (name: string): Promise<events | null> => {
 };
 
 export { getEventByName };
+
+

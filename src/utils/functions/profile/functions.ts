@@ -57,10 +57,10 @@ export const handleSaveChanges = async (
  * @returns {Promise<Array<{ phone: string; name: string; email: string }>>} A promise that resolves to an array of registration detail objects.
  */
 export async function fetchRegistrationDetails(
-    eventId: string,
+    eventId: string,   
     userId: string
 ): Promise<Array<{ phone: string; name: string; email: string }>> {
-    const { data, error } = await supabase.rpc('get_event_registration_details_by_userid', {
+    const { data, error } = await supabase.rpc('get_registration_details', {
         p_event_id: eventId,
         p_user_id: userId,
     });
@@ -68,7 +68,6 @@ export async function fetchRegistrationDetails(
     if (error) {
         console.error('Error fetching registration details:', error);
         throw new Error('Failed to fetch registration details');
-        return [];
     }
 
     // data is expected to be an array of objects like: [{ phone, name, email }, ...]

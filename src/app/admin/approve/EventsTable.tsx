@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Users, Search } from 'lucide-react';
 import { FixedSizeList as List } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -13,12 +13,12 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import type { EventData, TeamMember } from './functions';
+import type { EventData, TeamMember } from '@/utils/functions/events/getApprovalTable';
 import { Filter } from './EventFilters';
+import { get_approval_table_data } from '@/utils/functions/events/getApprovalTable';
+import TableSkeleton from './TableSkeleton';
 
-const COLUMN_WIDTHS = [
-  100, 180, 220, 240, 220, 240, 240, 240, 360, 240, 320, 280,
-];
+const COLUMN_WIDTHS = [100, 180, 220, 240, 220, 240, 240, 240, 360, 240, 320, 280];
 const TABLE_WIDTH = COLUMN_WIDTHS.reduce((a, b) => a + b, 0);
 
 function TeamMembersDialog({ members }: { members: TeamMember[] }) {
@@ -38,43 +38,43 @@ function TeamMembersDialog({ members }: { members: TeamMember[] }) {
           <DialogTitle>Team Members</DialogTitle>
         </DialogHeader>
         <div>
-          <div className="flex flex-wrap gap-4">
-            {members.map((member, index) => (
-              <div
-                key={index}
-                className="bg-[#1F2937] p-4 rounded-lg w-[300px]"
-              >
-                <div className="grid gap-4">
-                  <div>
-                    <p className="text-sm text-gray-400">Name</p>
-                    <p className="font-medium">{member.name}</p>
-                  </div>
-                  <div className="grid grid-cols-1 gap-4">
+          {members && members.length > 0 ? (
+            <div className="flex flex-wrap gap-4">
+              {members.map((member, index) => (
+                <div key={index} className="bg-[#1F2937] p-4 rounded-lg w-[300px]">
+                  <div className="grid gap-4">
                     <div>
-                      <p className="text-sm text-gray-400">Email</p>
-                      <p className="font-medium break-all">{member.email}</p>
+                      <p className="text-sm text-gray-400">Name</p>
+                      <p className="font-medium">{member.name}</p>
                     </div>
-                    <div>
-                      <p className="text-sm text-gray-400">Phone</p>
-                      <p className="font-medium">{member.phone}</p>
+                    <div className="grid grid-cols-1 gap-4">
+                      <div>
+                        <p className="text-sm text-gray-400">Email</p>
+                        <p className="font-medium break-all">{member.email}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-400">Phone</p>
+                        <p className="font-medium">{member.phone}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="py-4 text-center">
+              <p className="text-gray-400">No team members</p>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
   );
 }
 
-export default function EventsTable({
-  initialData,
-}: {
-  initialData: EventData[];
-}) {
-  const [data] = useState<EventData[]>(initialData);
+export default function EventsTable() {
+  const [data, setData] = useState<EventData[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [paymentStatusFilter, setPaymentStatusFilter] = useState('');
   const [eventFilter, setEventFilter] = useState('');
@@ -82,29 +82,38 @@ export default function EventsTable({
   const [collegeFilter, setCollegeFilter] = useState('');
   const [registeredAtFilter, setRegisteredAtFilter] = useState('');
 
+  useEffect(() => {
+    async function fetchData() {
+      const res = await get_approval_table_data();
+      if (res) {
+        setData(res);
+      }
+      setLoading(false);
+    }
+    fetchData();
+  }, []);
+
   const filteredData = useMemo(() => {
     return data.filter((item) => {
       const searchMatch =
         !searchQuery ||
-        item.eventName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.teamLeadPhone.includes(searchQuery) ||
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.teamLeadEmail.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.college.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.transactionId.toLowerCase().includes(searchQuery.toLowerCase());
+        (item.eventname ?? '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item.teamleadphone ?? '').includes(searchQuery) ||
+        (item.teamlead ?? '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item.teamleademail ?? '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item.college ?? '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item.transactionid ?? '').toLowerCase().includes(searchQuery.toLowerCase());
 
-      const paymentStatusMatch =
-        !paymentStatusFilter || item.paymentStatus === paymentStatusFilter;
-      const eventMatch = !eventFilter || item.eventName === eventFilter;
+      const paymentStatusMatch = !paymentStatusFilter || item.paymentstatus === paymentStatusFilter;
+      const eventMatch = !eventFilter || item.eventname === eventFilter;
       const typeMatch = !typeFilter || item.type === typeFilter;
       const collegeMatch = !collegeFilter || item.college === collegeFilter;
 
       const registeredAtMatch = (() => {
         if (!registeredAtFilter) return true;
         const now = new Date();
-        const registeredDate = new Date(item.registeredAt);
-        const hoursDiff =
-          (now.getTime() - registeredDate.getTime()) / (1000 * 60 * 60);
+        const registeredDate = new Date(item.registeredat);
+        const hoursDiff = (now.getTime() - registeredDate.getTime()) / (1000 * 60 * 60);
 
         switch (registeredAtFilter) {
           case 'Last 24 hours':
@@ -127,28 +136,11 @@ export default function EventsTable({
         registeredAtMatch
       );
     });
-  }, [
-    data,
-    searchQuery,
-    paymentStatusFilter,
-    eventFilter,
-    typeFilter,
-    collegeFilter,
-    registeredAtFilter,
-  ]);
+  }, [data, searchQuery, paymentStatusFilter, eventFilter, typeFilter, collegeFilter, registeredAtFilter]);
 
-  const uniqueEvents = useMemo(
-    () => Array.from(new Set(data.map((item) => item.eventName))),
-    [data]
-  );
-  const uniqueTypes = useMemo(
-    () => Array.from(new Set(data.map((item) => item.type))),
-    [data]
-  );
-  const uniqueColleges = useMemo(
-    () => Array.from(new Set(data.map((item) => item.college))),
-    [data]
-  );
+  const uniqueEvents = useMemo(() => Array.from(new Set(data.map((item) => item.eventname))), [data]);
+  const uniqueTypes = useMemo(() => Array.from(new Set(data.map((item) => item.type))), [data]);
+  const uniqueColleges = useMemo(() => Array.from(new Set(data.map((item) => item.college))), [data]);
 
   const clearAllFilters = () => {
     setSearchQuery('');
@@ -159,70 +151,54 @@ export default function EventsTable({
     setRegisteredAtFilter('');
   };
 
-  const Row = ({
-    index,
-    style,
-  }: {
-    index: number;
-    style: React.CSSProperties;
-  }) => {
+  const Row = ({ index, style }: { index: number; style: React.CSSProperties; }) => {
     const item = filteredData[index];
 
     return (
-      <div
-        style={{ ...style, width: TABLE_WIDTH }}
-        className="flex items-center border-b border-gray-800 hover:bg-[#131926] transition-colors"
-      >
+      <div style={{ ...style, width: TABLE_WIDTH }} className="flex items-center border-b border-gray-800 hover:bg-[#131926] transition-colors">
         {COLUMN_WIDTHS.map((width, colIndex) => (
-          <div
-            key={colIndex}
-            className="p-4 flex-none text-gray-100"
-            style={{ width: width }}
-          >
+          <div key={colIndex} className="p-4 flex-none text-gray-100" style={{ width: width }}>
             {colIndex === 0 ? (
-              item.slNo
+              item.serial_no
             ) : colIndex === 1 ? (
               <span
-                className={`px-2 py-1 rounded-md font-medium ${
-                  item.paymentStatus === 'Verified'
+                className={`px-2 py-1 rounded-md font-medium ${item.paymentstatus === 'Verified'
                     ? 'bg-[#132F21] text-[#4ADE80] border border-[#4ADE80]/20'
                     : 'bg-[#2A1215] text-[#F87171] border border-[#F87171]/20'
-                }`}
+                  }`}
               >
-                {item.paymentStatus}
+                {item.paymentstatus}
               </span>
             ) : colIndex === 2 ? (
-              item.eventName
+              item.eventname
             ) : colIndex === 3 ? (
-              <span className="px-2 py-1 rounded-md bg-[#1F2937] text-gray-300">
-                {item.type}
-              </span>
+              <span className="px-2 py-1 rounded-md bg-[#1F2937] text-gray-300">{item.type}</span>
             ) : colIndex === 4 ? (
-              item.teamName
+              item.teamname
             ) : colIndex === 5 ? (
               item.college
             ) : colIndex === 6 ? (
-              item.name
+              item.teamlead
             ) : colIndex === 7 ? (
-              item.teamLeadPhone
+              item.teamleadphone
             ) : colIndex === 8 ? (
-              item.teamLeadEmail
+              item.teamleademail
             ) : colIndex === 9 ? (
-              <span className="font-mono text-gray-300">
-                {item.transactionId}
-              </span>
+              <span className="font-mono text-gray-300">{item.transactionid}</span>
             ) : colIndex === 10 ? (
               <div className="min-w-[300px]">
                 <TeamMembersDialog members={item.teamMembers} />
               </div>
             ) : (
-              <span className="text-gray-400">{item.registeredAt}</span>
+              <span className="text-gray-400">{item.registeredat.split('T')[0]}</span>
             )}
           </div>
         ))}
       </div>
     );
   };
+
+  if (loading) return <TableSkeleton />;
 
   return (
     <div className="space-y-4">
@@ -278,7 +254,7 @@ export default function EventsTable({
             !collegeFilter &&
             !registeredAtFilter
           }
-          className="bg-[#1F2937] border-gray-700 hover:bg-[#2D3748] hover:text-white text-gray-300 disabled:cursor-not-allowed "
+          className="bg-[#1F2937] border-gray-700 hover:bg-[#2D3748] hover:text-white text-gray-300 disabled:cursor-not-allowed"
         >
           Clear All Filters
         </Button>
@@ -301,11 +277,7 @@ export default function EventsTable({
               'Members',
               'Registered At',
             ].map((header, index) => (
-              <div
-                key={index}
-                className="p-4 flex-none text-gray-100"
-                style={{ width: COLUMN_WIDTHS[index] }}
-              >
+              <div key={index} className="p-4 flex-none text-gray-100" style={{ width: COLUMN_WIDTHS[index] }}>
                 {header}
               </div>
             ))}
@@ -313,12 +285,7 @@ export default function EventsTable({
           <div style={{ height: '600px', width: '103%' }}>
             <AutoSizer>
               {({ height, width }) => (
-                <List
-                  height={height}
-                  width={width}
-                  itemCount={filteredData.length}
-                  itemSize={50}
-                >
+                <List height={height} width={width} itemCount={filteredData.length} itemSize={50}>
                   {Row}
                 </List>
               )}

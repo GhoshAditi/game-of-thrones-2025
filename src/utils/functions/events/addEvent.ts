@@ -1,4 +1,4 @@
-import { supabase } from "./supabase-client";
+import { supabase } from "../supabase-client";
 import { events } from "@/lib/types/events"
 
 export async function addEvent(event: Omit<events, 'id' | 'reg_status'>) {

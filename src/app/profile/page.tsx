@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/lib/stores";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,6 +13,7 @@ import EventCard from "@/components/events/EventCard";
 import { EditProfileDialog } from "@/components/profile";
 import { EventDetailsDialog } from "@/components/profile";
 import type { events } from "@/lib/types";
+import { toast } from "sonner";
 
 export default function ProfilePage() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -23,6 +24,8 @@ export default function ProfilePage() {
   const [name, setName] = useState<string | undefined>(undefined);
   const router = useRouter();
   const [registeredEvents, setRegisteredEvents] = useState<events[]>([]);
+  const searchParams = useSearchParams();
+
   useEffect(() => {
     if (eventsData.length > 0) {
       const registeredEvents = eventsData.filter((event) => event.registered);
@@ -30,6 +33,12 @@ export default function ProfilePage() {
     }
   }, [eventsData]);
 
+  useEffect(() => {
+    if (searchParams.get("onboarding") === "true") {
+      setIsEditModalOpen(true);
+      toast.info("Finish your profile first");
+    }
+  }, [searchParams]);
 
 
   const [selectedEvent, setSelectedEvent] = useState<events | null>(null);
@@ -139,7 +148,7 @@ export default function ProfilePage() {
       />
 
       <EventDetailsDialog event={selectedEvent} open={isEventDialogOpen} onOpenChange={setIsEventDialogOpen} userId={userData?.id!}
-        
+
       />
     </div>
   );

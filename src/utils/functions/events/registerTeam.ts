@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { supabase } from "./supabase-client";
+import { supabase } from "../supabase-client";
 
 export interface TeamMember {
     name: string;
@@ -44,7 +44,6 @@ export async function registerTeamWithParticipants(params: RegisterTeamParams) {
         }
     }
 
-
     const {
         userId,
         eventId,
@@ -57,6 +56,8 @@ export async function registerTeamWithParticipants(params: RegisterTeamParams) {
         teamLeadEmail,
         teamMembers,
     } = params;
+
+
 
     // Call the RPC function 'register_team_with_participants'
     const { data, error } = await supabase.rpc("register_team_with_participants", {
@@ -73,7 +74,12 @@ export async function registerTeamWithParticipants(params: RegisterTeamParams) {
     });
 
     if (error) {
-        toast.error(`Registration failed: ${error.message}`);
+        // Check for the specific error message
+        if (error.message.includes("User already registered for this event")) {
+            toast.error("You are already registered for this event.");
+        } else {
+            toast.error(`Registration failed: ${error.message}`);
+        }
         console.error("Error registering team:", error);
         throw new Error(error.message);
     } else {

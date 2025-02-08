@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import EventDetails from '@/components/events/EventDetails';
-import { getEventByName } from '@/utils/functions/getEvent';
+import { getEventByName } from '@/utils/functions/events/getEvent';
 
 // export const dynamic = "force-dynamic";
 
