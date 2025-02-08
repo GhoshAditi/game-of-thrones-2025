@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import styles from './EventCard.module.css';
-import Image from 'next/image';
 import parse from "html-react-parser";
 import { handleMixedFonts } from '@/utils/functions/handleMixedfont';
 

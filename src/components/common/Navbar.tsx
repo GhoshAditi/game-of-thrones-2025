@@ -8,10 +8,11 @@ import Link from 'next/link';
 import { login } from '@/utils/functions/auth/login';
 import { useUser } from '@/lib/stores/user';
 import { supabase } from '@/utils/functions/supabase-client';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarImage} from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { logout } from '@/utils/functions/auth/logout';
+import { useRouter } from 'next/navigation';
 
 const Navbar = () => {
   return (
@@ -164,9 +165,10 @@ const Buttons = ({
 );
 
 export const SignInButton = () => {
-  const { userData,userLoading } = useUser()
+  const { userData, userLoading } = useUser()
   const [profileImage, setProfileImage] = useState<string | null>(null)
   const [imageLoaded, setImageLoaded] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
     const readUserSession = async () => {
@@ -186,7 +188,7 @@ export const SignInButton = () => {
 
   if (userData && profileImage) {
     return (
-      <DropdownMenu>
+      <DropdownMenu >
         <DropdownMenuTrigger>
           <Avatar className="relative">
             {!imageLoaded && <Skeleton className="w-10 h-10 rounded-full absolute inset-0" />}
@@ -199,12 +201,13 @@ export const SignInButton = () => {
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
+          <DropdownMenuItem onSelect={() => { router.push('/profile') }}>Profile</DropdownMenuItem>
           <DropdownMenuItem onSelect={
             () => {
               logout()
               window.location.reload();
             }
-            }>Logout</DropdownMenuItem>
+          }>Logout</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     )
@@ -244,7 +247,7 @@ const MobileMenu = ({ menuOpen }: { menuOpen: boolean }) => {
           <TextLink text="Team" link="/team" />
           <TextLink text="Events" link="/events" />
           <GlassLink text="Gallery" link="/gallery" />
-    <GlassLink text="Contacts" link="/contacts" />
+          <GlassLink text="Contacts" link="/contacts" />
           <SignInButton />
         </div>
       </div>

@@ -3,17 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import { Wrapper } from "../common/Wrapper";
 import { useEvents } from "@/lib/stores";
-import type { events } from "@/lib/types/events";
 import { RulesDialog } from "./RulesDialog";
 import { parseWithQuillStyles } from "@/utils/functions/quilParser";
 import { EventRegistrationDialog } from "./EventRegistrationDialog";
 import { TeamEventRegistration } from "./TeamEventRegitration";
-
-
-
 
 const eventIcons: Record<string, string> = {
   CRICKET: "/icons/cricket.svg",
@@ -50,34 +46,17 @@ const SkeletonLoader = () => (
 );
 
 export default function EventDetails({ eventname }: { eventname: string }) {
-  const [isLoading, setIsLoading] = useState(true);
   const { eventsData, eventsLoading } = useEvents();
-  const [eventData, setEventData] = useState<events | null>(null);
   const [isSoloOpen, setIsSoloOpen] = useState(false);
   const [isTeamOpen, setIsTeamOpen] = useState(false);
 
-  useEffect(() => {
-    if (!eventsLoading && eventsData.length > 0) {
-      const event = eventsData.find(
-        (e) => e.name.toLowerCase() === eventname.toLowerCase()
-      );
-      if (event) {
-        setEventData(event);
-        setIsLoading(false);
-      }
-    }
-  }, [eventsData, eventsLoading, eventname]);
+  // Derive eventData directly from the hook data
+  const eventData = eventsData.find(
+    (e) => e.name.toLowerCase() === eventname.toLowerCase()
+  );
 
-  const handleRegister = () => {
-    if (eventData?.max_team_size === 1) {
-      setIsSoloOpen(true);
-    }
-    else {
-      setIsTeamOpen(true);
-    }
-  };
-
-  if (isLoading || !eventData) {
+  // While loading or if event not found, show loader or a fallback
+  if (eventsLoading || !eventData) {
     return (
       <Wrapper>
         <div className="min-h-screen w-full mt-14 text-white flex flex-col items-center py-16 px-4 relative">
@@ -86,6 +65,14 @@ export default function EventDetails({ eventname }: { eventname: string }) {
       </Wrapper>
     );
   }
+
+  const handleRegister = () => {
+    if (eventData.max_team_size === 1) {
+      setIsSoloOpen(true);
+    } else {
+      setIsTeamOpen(true);
+    }
+  };
 
   return (
     <Wrapper>
@@ -121,7 +108,7 @@ export default function EventDetails({ eventname }: { eventname: string }) {
           />
         </div>
 
-        {/* Main Event Details with content width matching the image */}
+        {/* Main Event Details */}
         <div className="max-w-[28rem] space-y-3 font-bold">
           <p className="text-2xl">
             Registration Fee: {eventData.registration_fees}
@@ -142,7 +129,6 @@ export default function EventDetails({ eventname }: { eventname: string }) {
           <p>Description:</p>
           <div>{parseWithQuillStyles(eventData.description)}</div>
 
-          {/* If the event has any links, display them as buttons */}
           {eventData.links && eventData.links.length > 0 && (
             <div className="mt-4 flex flex-wrap gap-4">
               {eventData.links.map((link, index) => (
@@ -170,28 +156,26 @@ export default function EventDetails({ eventname }: { eventname: string }) {
           </Link>
 
           <RulesDialog rules={eventData.rules} />
-          <EventRegistrationDialog isOpen={isSoloOpen} onClose={() => {
-            setIsSoloOpen(false);
-          }}
+          <EventRegistrationDialog
+            isOpen={isSoloOpen}
+            onClose={() => setIsSoloOpen(false)}
             eventName={eventData.name}
           />
-          <TeamEventRegistration isOpen={isTeamOpen} onClose={() => {
-            setIsTeamOpen(false);
-          }}
+          <TeamEventRegistration
+            isOpen={isTeamOpen}
+            onClose={() => setIsTeamOpen(false)}
+            eventID={eventData.id}
             eventName={eventData.name}
             minTeamSize={Number(eventData.min_team_size)}
             maxTeamSize={Number(eventData.max_team_size)}
           />
-
 
           <Button
             onClick={handleRegister}
             disabled={eventData.registered}
             className="px-6 bg-purple-600 hover:bg-purple-700"
           >
-            {eventData.registered
-              ? "Registered"
-              : "Register Now"}
+            {eventData.registered ? "Registered" : "Register Now"}
           </Button>
         </div>
       </div>

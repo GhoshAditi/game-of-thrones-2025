@@ -22,7 +22,7 @@ export default function RootLayout({
         {children}
         <SessionProvider />
         <Footer />
-        <Toaster position="bottom-right" richColors />
+        <Toaster position="bottom-right" richColors duration={5000} />
       </body>
     </html>
   );

@@ -8,7 +8,6 @@ interface TeamMember {
     name: string
     email: string
     phone: string
-    collegeName: string
 }
 
 interface ViewTeamMembersProps {
@@ -34,7 +33,6 @@ export function ViewTeamMembers({ isOpen, onOpenChange, teamMembers }: ViewTeamM
                     <p className="text-white font-semibold">Name: {member.name}</p>
                     <p className="text-gray-400">Email: {member.email}</p>
                     <p className="text-gray-400">Phone: {member.phone}</p>
-                    <p className="text-gray-400">College: {member.collegeName}</p>
                 </div>
             ))}
         </div>

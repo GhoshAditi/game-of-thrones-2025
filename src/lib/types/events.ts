@@ -40,4 +40,5 @@ export interface EventsStateType {
 // The actions interface for events.
 export interface EventsActionsType {
   setEventsData: () => void;
+  markEventAsRegistered: (eventId: string) => void;
 }

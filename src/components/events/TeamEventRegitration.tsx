@@ -13,8 +13,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
-import { ViewTeamMembers } from "./ViewteamMembers"; // adjust the import path as needed
+import { ViewTeamMembers } from "./ViewteamMembers";
 import { useUser } from "@/lib/stores";
+import { uploadPaymentScreenshot } from "@/utils/functions/supabaseUpload";
+import { toast } from "sonner";
+import { RegisterTeamParams, registerTeamWithParticipants } from "@/utils/functions/registerTeam";
+import { useEvents } from "@/lib/stores";
 
 interface EventRegistrationDialogProps {
     isOpen: boolean;
@@ -22,6 +26,7 @@ interface EventRegistrationDialogProps {
     eventName: string;
     minTeamSize: number; // includes team lead
     maxTeamSize: number;
+    eventID: string;
 }
 
 // Zod schema for the Team Lead (Step 1)
@@ -34,16 +39,15 @@ const teamLeadSchema = z.object({
 type TeamLeadFormValues = z.infer<typeof teamLeadSchema>;
 
 // Zod schema for a Team Member (used in Step 2)
+// Note: Removed the collegeName field.
 const teamMemberSchema = z.object({
     name: z.string().min(1, "Name is required"),
     phone: z.string().min(1, "Phone is required"),
     email: z.string().email("Invalid email"),
-    collegeName: z.string().min(1, "College name is required"),
 });
 type TeamMemberFormValues = z.infer<typeof teamMemberSchema>;
 
 // Zod schema for Payment Details (Step 3)
-// For file inputs, we check that a file is provided then transform FileList to a File.
 const paymentSchema = z.object({
     transactionId: z.string().min(1, "Transaction ID is required"),
     paymentScreenshot: z
@@ -59,20 +63,22 @@ export function TeamEventRegistration({
     eventName,
     minTeamSize,
     maxTeamSize,
+    eventID,
 }: EventRegistrationDialogProps) {
-
     const { userData } = useUser();
-    // User store for checking if user is logged in
+    const { markEventAsRegistered } = useEvents();
     // step: 1 = Team Lead, 2 = Manage Team Members, 3 = Payment Details
     const [step, setStep] = useState(1);
     // Store validated team lead details
     const [teamLeadData, setTeamLeadData] = useState<TeamLeadFormValues | null>(null);
-    // Store added team members
+    // Store added team members (without a college field)
     const [teamMembers, setTeamMembers] = useState<TeamMemberFormValues[]>([]);
     // For displaying the added team members via the ViewTeamMembers component
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     // Toggle for showing the add team member form
     const [isAddingMember, setIsAddingMember] = useState(false);
+    // Payment screenshot URL (if upload succeeds)
+    const [paymentScreenshotUrl, setPaymentScreenshotUrl] = useState<string | null>(null);
 
     // ----------- Step 1: Team Lead Form -----------
     const {
@@ -129,20 +135,49 @@ export function TeamEventRegistration({
         resolver: zodResolver(paymentSchema),
     });
 
-    const onPaymentSubmit = (data: PaymentFormValues) => {
-        // Combine all registration data
-        const registrationData = {
-            teamLead: teamLeadData,
-            teamMembers,
-            paymentData: data,
+    const onPaymentSubmit = async (data: PaymentFormValues) => {
+        let screenshotUrl = "";
+        try {
+            // Upload the payment screenshot using the integrated Supabase function.
+            screenshotUrl = await uploadPaymentScreenshot(data.paymentScreenshot, eventName);
+        } catch (error) {
+            console.error("Failed to upload screenshot:", error);
+            toast.error("Failed to upload payment screenshot. Please try again.");
+            // Do not close the dialog if upload fails.
+            return;
+        }
+
+        // Combine all registration data.
+        const registrationParams: RegisterTeamParams = {
+            userId: userData?.id!, // non-null assertion since we expect this to be set
+            eventId: eventID,
+            transactionId: data.transactionId,
+            teamName: teamLeadData!.name,
+            college: teamLeadData!.collegeName,
+            transactionScreenshot: screenshotUrl,
+            teamLeadName: teamLeadData!.name,
+            teamLeadPhone: teamLeadData!.phone,
+            teamLeadEmail: teamLeadData!.email,
+            teamMembers: teamMembers, // an array of team member objects
         };
-        console.log("Submitted registration data:", registrationData);
-        // Reset everything and close the dialog
-        onClose();
-        setStep(1);
-        setTeamLeadData(null);
-        setTeamMembers([]);
-        resetPayment();
+
+        try {
+            // Call the registerTeamWithParticipants function.
+            const result = await registerTeamWithParticipants(registrationParams);
+            console.log("Registration result:", result);
+            // Only close the dialog if registration succeeds.
+            markEventAsRegistered(eventID);
+            onClose();
+            setTeamLeadData(null);
+            setStep(1);
+            setTeamMembers([]);
+            resetPayment();
+        } catch (error) {
+            console.error("Failed to register team:", error);
+            toast.error("Failed to register team. Please try again.");
+            // Dialog remains open if registration fails.
+            return;
+        }
     };
 
     return (
@@ -265,7 +300,6 @@ export function TeamEventRegistration({
                                 teamMembers={teamMembers}
                             />
                         )}
-
                         {isAddingMember ? (
                             <form
                                 onSubmit={handleTeamMemberSubmit(onAddTeamMember)}
@@ -313,20 +347,6 @@ export function TeamEventRegistration({
                                     />
                                     {teamMemberErrors.email && (
                                         <p className="text-red-500 text-sm">{teamMemberErrors.email.message}</p>
-                                    )}
-                                </div>
-                                <div className="grid gap-2">
-                                    <label htmlFor="memberCollegeName" className="text-white">
-                                        College Name
-                                    </label>
-                                    <Input
-                                        id="memberCollegeName"
-                                        {...registerTeamMember("collegeName")}
-                                        className="bg-black border border-gray-500 focus:border-[#8B5CF6] focus:outline-none text-white rounded-md"
-                                        placeholder="Enter college name"
-                                    />
-                                    {teamMemberErrors.collegeName && (
-                                        <p className="text-red-500 text-sm">{teamMemberErrors.collegeName.message}</p>
                                     )}
                                 </div>
                                 <div className="flex flex-col sm:flex-row gap-4 mt-4">
@@ -394,9 +414,7 @@ export function TeamEventRegistration({
                                     placeholder="Enter transaction ID"
                                 />
                                 {paymentErrors.transactionId && (
-                                    <p className="text-red-500 text-sm">
-                                        {paymentErrors.transactionId.message}
-                                    </p>
+                                    <p className="text-red-500 text-sm">{paymentErrors.transactionId.message}</p>
                                 )}
                             </div>
                             <div className="grid gap-2">
@@ -411,9 +429,7 @@ export function TeamEventRegistration({
                                     accept="image/*"
                                 />
                                 {paymentErrors.paymentScreenshot && (
-                                    <p className="text-red-500 text-sm">
-                                        {String(paymentErrors.paymentScreenshot.message)}
-                                    </p>
+                                    <p className="text-red-500 text-sm">{String(paymentErrors.paymentScreenshot.message)}</p>
                                 )}
                             </div>
                         </div>
