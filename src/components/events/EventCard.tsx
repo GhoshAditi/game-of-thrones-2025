@@ -11,9 +11,10 @@ interface EventCardProps {
   subtitle: string;
   schedule: string;
   image_url: string;
+  button_text?: string;
 }
 
-const EventCard: React.FC<EventCardProps> = ({ title, subtitle, schedule, image_url }) => {
+const EventCard: React.FC<EventCardProps> = ({ title, subtitle, schedule, image_url, button_text = "View Details" }) => {
   const [isActive, setIsActive] = useState(false);
 
   return (
@@ -31,7 +32,7 @@ const EventCard: React.FC<EventCardProps> = ({ title, subtitle, schedule, image_
           <p className="text-gray-300 text-sm line-clamp-2">{parse(subtitle)}</p>
           <p className="text-gray-400 text-xs">{parse(schedule)}</p>
           <div className="mt-4 px-6 py-2 bg-purple-600 text-white font-bold rounded-md transition-all duration-300 ease-in-out hover:bg-purple-700">
-            View Details
+            {button_text}
           </div>
         </div>
       </div>

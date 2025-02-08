@@ -97,8 +97,8 @@ export default function ProfilePage() {
             </Avatar>
             <div className="space-y-4 flex-1">
               <div>
-                <h1 className="text-2xl font-semibold text-white">{userData?.name ? userData?.name : name}</h1>
-                <p className="text-muted-foreground text-white">{userData?.email}</p>
+                <h1 className="text-2xl font-semibold font-sargento text-white">{userData?.name ? userData?.name : name}</h1>
+                <p className="text-muted-foreground text-white font-instrumentSans">{userData?.email}</p>
               </div>
               <div className="flex gap-4">
                 <Button variant="outline" onClick={() => setIsEditModalOpen(true)}>
@@ -122,6 +122,7 @@ export default function ProfilePage() {
                   subtitle={event.description}
                   schedule={event.schedule}
                   image_url={event.image_url}
+                  button_text="View Team Members"
                 />
               </div>
             ))}
@@ -137,7 +138,9 @@ export default function ProfilePage() {
         profileImage={profileImage}
       />
 
-      <EventDetailsDialog event={selectedEvent} open={isEventDialogOpen} onOpenChange={setIsEventDialogOpen} />
+      <EventDetailsDialog event={selectedEvent} open={isEventDialogOpen} onOpenChange={setIsEventDialogOpen} userId={userData?.id!}
+        
+      />
     </div>
   );
 }
