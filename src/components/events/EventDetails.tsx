@@ -13,6 +13,7 @@ import { SoloEventRegistration } from "./EventRegistrationDialog";
 import { TeamEventRegistration } from "./TeamEventRegitration";
 import { useUser } from "@/lib/stores";
 import { login } from "@/utils/functions/auth/login";
+import { toast } from "sonner";
 
 const eventIcons: Record<string, string> = {
   CRICKET: "/icons/cricket.svg",
@@ -73,6 +74,10 @@ export default function EventDetails({ eventname }: { eventname: string }) {
 
   const handleRegister = async () => {
     // Check if the user is logged in
+    if (userLoading) {
+      toast.info("Please wait while we check your login status");
+      return;
+    }
     if (!userData) {
       await login();
       return;
