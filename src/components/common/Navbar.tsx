@@ -70,8 +70,8 @@ const GlassNavigation = () => {
         <Logo />
 
         <div className="flex flex-row items-center gap-4">
-          <GlassLink text="Coordinator" link="/events" />
-          <Buttons setMenuOpen={setMenuOpen} />
+          {/* <GlassLink text="Coordinator" link="/events" />*/} {/* To be uncommented later */}
+           <Buttons setMenuOpen={setMenuOpen} />
         </div>
       </div>
 
@@ -114,7 +114,7 @@ const Links = () => (
   <div className="hidden items-center gap-2 md:flex">
     <GlassLink text="Home" link="/" />
     <GlassLink text="Events" link="/events" />
-    <GlassLink text="Team" link="/team" />
+    {/* <GlassLink text="Team" link="/team" /> */}
     <GlassLink text="Gallery" link="/gallery" />
     <GlassLink text="Contacts" link="/contacts" />
   </div>

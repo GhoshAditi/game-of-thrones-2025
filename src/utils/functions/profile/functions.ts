@@ -59,7 +59,10 @@ export const handleSaveChanges = async (
 export async function fetchRegistrationDetails(
     eventId: string,   
     userId: string
-): Promise<Array<{ phone: string; name: string; email: string }>> {
+): Promise<Array<{
+    team_name: boolean;
+    team_members: boolean; phone: string; name: string; email: string 
+}>> {
     const { data, error } = await supabase.rpc('get_registration_details', {
         p_event_id: eventId,
         p_user_id: userId,

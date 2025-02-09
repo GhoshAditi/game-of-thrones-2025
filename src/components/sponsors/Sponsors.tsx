@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 function Sponsors() {
   const router = useRouter();
   return (
-    <div className="relative bg-black flex flex-row flex-wrap items-center justify-center md:gap-20 w-full">
+    <div className="relative bg-black pb-8 flex flex-row flex-wrap items-center justify-center md:gap-20 w-full">
       {/* Football Image */}
       <Image
         src="/assets/football.png"
