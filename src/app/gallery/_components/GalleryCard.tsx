@@ -8,7 +8,7 @@ const GalleryCard = ({ photo }: { photo: string }) => {
 
   return (
     <div
-      className="relative h-[300px] w-[400] transform overflow-hidden 
+      className="relative h-[200px] w-full sm:h-[300px] sm:w-[400px] transform overflow-hidden 
           rounded-2xl grayscale transition-all duration-500 ease-in-out hover:scale-105 hover:grayscale-0
           "
     >
