@@ -12,6 +12,7 @@ export async function middleware(req: NextRequest) {
 
   const url = new URL(req.nextUrl);
 
+  // Redirect if there's no session for admin or profile routes.
   if (!session) {
     if (url.pathname.startsWith('/admin') || url.pathname.startsWith('/profile')) {
       return NextResponse.redirect(new URL('/', req.url));
@@ -19,24 +20,32 @@ export async function middleware(req: NextRequest) {
     return res;
   }
 
-  // const { data: userRoles, error } = await supabase
-  //   .from('roles')
-  //   .select(`
-  //     role,
-  //     event_categories (
-  //       fest_name,
-  //       year
-  //     )
-  //   `)
-  //   .eq('id', session.user.id)
-  //   .eq('role', 'supar_admin')
-  //   .eq('event_categories.fest_name', 'Game Of Thrones')
-  //   .eq('event_categories.year', 2025);
 
-  // // If an error occurs or no matching role is found, redirect away.
-  // if (error || !userRoles || userRoles.length === 0) {
-  //   return NextResponse.redirect(new URL('/unauthorised', req.url));
-  // }
+  // Only perform the role check if the user is trying to access an admin route.
+  if (url.pathname.startsWith('/admin')) {
+    const { data: userRoles, error } = await supabase
+      .from('roles')
+      .select(`
+        role,
+        event_categories (
+          name,
+          fests (
+            name,
+            year
+          )
+        )
+      `)
+      .eq('user_id', session.user.id)
+      .eq('role', 'super_admin')
+      .eq('event_categories.fests.name', 'Game Of Thrones')
+      .eq('event_categories.fests.year', 2025);
+
+
+    // Redirect to /unauthorised if there's an error or no matching role record.
+    if (error || !userRoles || userRoles.length === 0) {
+      return NextResponse.redirect(new URL('/unauthorized', req.url));
+    }
+  }
 
   return NextResponse.next();
 }

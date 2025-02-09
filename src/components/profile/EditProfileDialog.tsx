@@ -17,7 +17,6 @@ interface EditProfileDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     userData: any;
-    updateUserData: (updatedData: any) => Promise<void> | void;
     profileImage?: string;
     name?: string;
     onSave: (formData: FormData) => Promise<void>;
@@ -27,7 +26,6 @@ export const EditProfileDialog: FC<EditProfileDialogProps> = ({
     open,
     onOpenChange,
     userData,
-    updateUserData,
     name,
     profileImage,
     onSave,

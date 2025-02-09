@@ -63,7 +63,7 @@ export default function ProfilePage() {
 
     const handleLogout = async () => {
         await logout();
-        router.push("/");
+        router.push("/");   
     };
 
     const handleEventClick = (event: events) => {
@@ -149,7 +149,6 @@ export default function ProfilePage() {
                 open={isEditModalOpen}
                 onOpenChange={setIsEditModalOpen}
                 userData={userData}  
-                updateUserData={updateUserData}
                 profileImage={profileImage}
                 onSave={handleProfileSave}
                 name={name}
