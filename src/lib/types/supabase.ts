@@ -80,7 +80,7 @@ export type Database = {
       }
       events: {
         Row: {
-          coordinators: Json | null
+          coordinators: Json[] | null
           description: string | null
           event_category_id: string
           id: string
@@ -96,7 +96,7 @@ export type Database = {
           schedule: string | null
         }
         Insert: {
-          coordinators?: Json | null
+          coordinators?: Json[] | null
           description?: string | null
           event_category_id?: string
           id?: string
@@ -112,7 +112,7 @@ export type Database = {
           schedule?: string | null
         }
         Update: {
-          coordinators?: Json | null
+          coordinators?: Json[] | null
           description?: string | null
           event_category_id?: string
           id?: string
@@ -178,7 +178,7 @@ export type Database = {
           {
             foreignKeyName: "participants_team_id_fkey"
             columns: ["team_id"]
-            isOneToOne: true
+            isOneToOne: false
             referencedRelation: "teams"
             referencedColumns: ["team_id"]
           },
@@ -322,6 +322,13 @@ export type Database = {
             referencedRelation: "referral_codes"
             referencedColumns: ["referral_code"]
           },
+          {
+            foreignKeyName: "teams_team_lead_id_fkey"
+            columns: ["team_lead_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
         ]
       }
       users: {
@@ -365,7 +372,137 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_approval_table_data: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          serial_no: number
+          paymentstatus: string
+          eventname: string
+          type: string
+          teamname: string
+          college: string
+          teamlead: string
+          teamleadphone: string
+          teamleademail: string
+          transactionid: string
+          transaction_screenshot: string
+          teammembers: Json
+          registeredat: string
+        }[]
+      }
+      get_event_by_name_with_registration: {
+        Args: {
+          p_event_name: string
+        }
+        Returns: {
+          id: string
+          event_category_id: string
+          name: string
+          description: string
+          min_team_size: number
+          max_team_size: number
+          registration_fees: number
+          prize_pool: number
+          schedule: string
+          rules: string
+          reg_status: boolean
+          image_url: string
+          coordinators: Json[]
+          links: Json
+        }[]
+      }
+      get_events_with_registration: {
+        Args: {
+          p_user_id?: string
+        }
+        Returns: {
+          id: string
+          event_category_id: string
+          name: string
+          description: string
+          min_team_size: number
+          max_team_size: number
+          registration_fees: number
+          prize_pool: number
+          schedule: string
+          rules: string
+          reg_status: boolean
+          image_url: string
+          coordinators: Json[]
+          links: Json
+          registered: boolean
+        }[]
+      }
+      get_registration_details: {
+        Args: {
+          p_event_id: string
+          p_user_id: string
+        }
+        Returns: {
+          is_team: boolean
+          team_name: string
+          team_members: Json
+        }[]
+      }
+      register_solo_event: {
+        Args: {
+          p_user_id: string
+          p_event_id: string
+          p_transaction_id: string
+          p_transaction_screenshot: string
+          p_college: string
+        }
+        Returns: {
+          attendance: boolean | null
+          college: string | null
+          event_id: string
+          is_team: boolean | null
+          payment_mode: string | null
+          referral_code: string | null
+          reg_mode: string | null
+          registered_at: string | null
+          team_id: string
+          team_lead_email: string | null
+          team_lead_id: string | null
+          team_name: string | null
+          transaction_id: string | null
+          transaction_screenshot: string | null
+          transaction_verified: string | null
+          verification_mail_sent: boolean | null
+        }
+      }
+      register_team_with_participants: {
+        Args: {
+          p_user_id: string
+          p_event_id: string
+          p_transaction_id: string
+          p_team_name: string
+          p_college: string
+          p_transaction_screenshot: string
+          p_team_lead_name: string
+          p_team_lead_phone: string
+          p_team_lead_email: string
+          p_team_members: Json
+        }
+        Returns: {
+          attendance: boolean | null
+          college: string | null
+          event_id: string
+          is_team: boolean | null
+          payment_mode: string | null
+          referral_code: string | null
+          reg_mode: string | null
+          registered_at: string | null
+          team_id: string
+          team_lead_email: string | null
+          team_lead_id: string | null
+          team_name: string | null
+          transaction_id: string | null
+          transaction_screenshot: string | null
+          transaction_verified: string | null
+          verification_mail_sent: boolean | null
+        }
+      }
     }
     Enums: {
       [_ in never]: never

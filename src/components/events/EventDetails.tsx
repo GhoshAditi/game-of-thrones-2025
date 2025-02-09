@@ -127,7 +127,7 @@ export default function EventDetails({ eventname }: { eventname: string }) {
       userData.phone.trim() === "" ||
       userData.name.trim() === ""
     ) {
-      router.push("/profile?onboarding=true");
+      `/profile?onboarding=true&callback=${encodeURIComponent(`/events/${eventname}`)}`
       return;
     }
 

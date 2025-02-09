@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet"
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from "@/components/ui/drawer"
+import { Button } from "@/components/ui/button"
 
 interface TeamMember {
     name: string
@@ -14,9 +15,10 @@ interface ViewTeamMembersProps {
     isOpen: boolean
     onOpenChange: (open: boolean) => void
     teamMembers: TeamMember[]
+    onEditMember: (index: number) => void
 }
 
-export function ViewTeamMembers({ isOpen, onOpenChange, teamMembers }: ViewTeamMembersProps) {
+export function ViewTeamMembers({ isOpen, onOpenChange, teamMembers, onEditMember }: ViewTeamMembersProps) {
     const [isMobile, setIsMobile] = useState(false)
 
     useEffect(() => {
@@ -33,6 +35,12 @@ export function ViewTeamMembers({ isOpen, onOpenChange, teamMembers }: ViewTeamM
                     <p className="text-white font-semibold">Name: {member.name}</p>
                     <p className="text-gray-400">Email: {member.email}</p>
                     <p className="text-gray-400">Phone: {member.phone}</p>
+                    <Button
+                        onClick={() => onEditMember(index)}
+                        className="mt-2 bg-[#8B5CF6] text-white hover:bg-[#8B5CF6]/90 border-0"
+                    >
+                        Edit
+                    </Button>
                 </div>
             ))}
         </div>

@@ -18,8 +18,9 @@ export interface EventData {
     teamleadphone: string;  // Team lead's phone (from the users table)
     teamleademail: string;
     transactionid: string;
+    transaction_screenshot: string;
     registeredat: string;
-    teamMembers: TeamMember[];
+    teammembers: TeamMember[];
 }
 
 
@@ -41,3 +42,6 @@ const get_approval_table_data = async (): Promise<EventData[] | null> => {
 };
 
 export { get_approval_table_data };
+
+
+
