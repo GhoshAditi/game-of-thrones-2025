@@ -26,13 +26,11 @@ export default function ProfilePage() {
     const [name, setName] = useState<string | undefined>(undefined);
     const router = useRouter();
     const searchParams = useSearchParams();
-    // Store callback URL from the query params.
     const [callbackUrl, setCallbackUrl] = useState<string | null>(null);
     const [registeredEvents, setRegisteredEvents] = useState<events[]>([]);
     const [selectedEvent, setSelectedEvent] = useState<events | null>(null);
     const [isEventDialogOpen, setIsEventDialogOpen] = useState(false);
 
-    // Extract callback URL from search params on mount.
     useEffect(() => {
         const cb = searchParams.get("callback");
         setCallbackUrl(cb);
@@ -73,12 +71,9 @@ export default function ProfilePage() {
         setIsEventDialogOpen(true);
     };
 
-    // A wrapper function for handling profile save.
     const handleProfileSave = async (formData: FormData) => {
-        // Assuming handleSaveChanges returns a promise that resolves on success.
         await handleSaveChanges(formData, userData, updateUserData, () => {
             setIsEditModalOpen(false);
-            // Redirect after saving if a callback URL is provided.
             if (callbackUrl) {
                 router.push(callbackUrl);
             }
@@ -127,19 +122,26 @@ export default function ProfilePage() {
 
                 <div className="mt-8">
                     <h2 className="text-2xl font-bold mb-4 text-white">Events Registered</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {registeredEvents.map((event, index) => (
-                            <div key={index} onClick={() => handleEventClick(event)}>
-                                <EventCard
-                                    title={event.name}
-                                    subtitle={event.description}
-                                    schedule={event.schedule}
-                                    image_url={event.image_url}
-                                    button_text="View Team Members"
-                                />
-                            </div>
-                        ))}
-                    </div>
+                    {registeredEvents.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {registeredEvents.map((event, index) => (
+                                <div key={index} onClick={() => handleEventClick(event)}>
+                                    <EventCard
+                                        title={event.name}
+                                        subtitle={event.description}
+                                        schedule={event.schedule}
+                                        image_url={event.image_url}
+                                        button_text="View Team Members"
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center text-white">
+                            <p className="text-lg mb-4">You have not registered for any event. Register now!</p>
+                            <Button onClick={() => router.push("/events")} variant="outline" className="text-black">Browse Events</Button>
+                        </div>
+                    )}
                 </div>
             </main>
 

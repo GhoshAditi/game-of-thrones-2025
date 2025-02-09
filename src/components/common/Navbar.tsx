@@ -151,6 +151,9 @@ const Buttons = ({
   setMenuOpen: Dispatch<SetStateAction<boolean>>;
 }) => (
   <div className="flex items-center gap-4">
+    <div className="block md:hidden">
+      <SignInButton />
+    </div>
     <div className="hidden md:block">
       <SignInButton />
     </div>
@@ -248,7 +251,6 @@ const MobileMenu = ({ menuOpen }: { menuOpen: boolean }) => {
           <TextLink text="Events" link="/events" />
           <GlassLink text="Gallery" link="/gallery" />
           <GlassLink text="Contacts" link="/contacts" />
-          <SignInButton />
         </div>
       </div>
     </motion.div>

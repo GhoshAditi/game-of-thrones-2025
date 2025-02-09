@@ -1,51 +1,51 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Wrapper } from "../common/Wrapper";
-import { useEvents } from "@/lib/stores";
-import { RulesDialog } from "./RulesDialog";
+import Image from 'next/image';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Wrapper } from '../common/Wrapper';
+import { useEvents } from '@/lib/stores';
+import { RulesDialog } from './RulesDialog';
 // import { parseWithQuillStyles } from "@/utils/functions/quilParser";
-import { SoloEventRegistration } from "./EventRegistrationDialog";
-import { TeamEventRegistration } from "./TeamEventRegitration";
-import { useUser } from "@/lib/stores";
-import { login } from "@/utils/functions/auth/login";
-import { toast } from "sonner";
+import { SoloEventRegistration } from './EventRegistrationDialog';
+import { TeamEventRegistration } from './TeamEventRegitration';
+import { useUser } from '@/lib/stores';
+import { login } from '@/utils/functions/auth/login';
+import { toast } from 'sonner';
 
-import parse from "html-react-parser";
-import { cn } from "@/lib/utils";
+import parse from 'html-react-parser';
+import { cn } from '@/lib/utils';
 
 export const quillStyles: Record<string, string> = {
-  p: "mb-4 text-base text-gray-100 font-medium",
-  h1: "mt-6 mb-2 text-3xl font-bold text-white",
-  h2: "mt-5 mb-2 text-2xl font-bold text-white",
-  h3: "mt-4 mb-2 text-xl font-bold text-white",
-  h4: "mt-3 mb-2 text-lg font-bold text-white",
-  h5: "mt-2 mb-2 text-base font-bold text-white",
-  h6: "mt-1 mb-2 text-sm font-bold text-white",
-  strong: "font-bold !text-purple-300",
-  em: "italic text-gray-100",
-  u: "underline text-gray-100",
-  a: "text-purple-300 hover:underline hover:text-purple-200",
-  blockquote: "border-l-4 border-purple-400 pl-4 italic text-gray-100 my-4",
-  ul: "list-disc pl-6 mb-4 space-y-2",
-  ol: "list-decimal pl-6 mb-4 space-y-2",
-  li: "text-gray-100",
-  pre: "bg-gray-800 p-4 rounded text-sm overflow-x-auto my-4 text-gray-100",
-  code: "bg-gray-800 px-1 py-0.5 rounded text-sm font-mono text-purple-300",
-  img: "max-w-full h-auto my-4",
+  p: 'mb-4 text-base text-gray-100 font-medium',
+  h1: 'mt-6 mb-2 text-3xl font-bold text-white',
+  h2: 'mt-5 mb-2 text-2xl font-bold text-white',
+  h3: 'mt-4 mb-2 text-xl font-bold text-white',
+  h4: 'mt-3 mb-2 text-lg font-bold text-white',
+  h5: 'mt-2 mb-2 text-base font-bold text-white',
+  h6: 'mt-1 mb-2 text-sm font-bold text-white',
+  strong: 'font-bold !text-purple-300',
+  em: 'italic text-gray-100',
+  u: 'underline text-gray-100',
+  a: 'text-purple-300 hover:underline hover:text-purple-200',
+  blockquote: 'border-l-4 border-purple-400 pl-4 italic text-gray-100 my-4',
+  ul: 'list-disc pl-6 mb-4 space-y-2',
+  ol: 'list-decimal pl-6 mb-4 space-y-2',
+  li: 'text-gray-100',
+  pre: 'bg-gray-800 p-4 rounded text-sm overflow-x-auto my-4 text-gray-100',
+  code: 'bg-gray-800 px-1 py-0.5 rounded text-sm font-mono text-purple-300',
+  img: 'max-w-full h-auto my-4',
 };
 
 export const parseWithQuillStyles = (html: string) => {
   return parse(html, {
     replace: (domNode: any) => {
-      if (domNode.type === "tag") {
+      if (domNode.type === 'tag') {
         const tagName = domNode.name.toLowerCase();
         if (quillStyles[tagName]) {
-          const existingClass = domNode.attribs?.class || "";
+          const existingClass = domNode.attribs?.class || '';
           const newClass = cn(existingClass, quillStyles[tagName]);
           domNode.attribs = { ...domNode.attribs, class: newClass };
           return domNode;
@@ -55,37 +55,70 @@ export const parseWithQuillStyles = (html: string) => {
   });
 };
 
-
 const eventIcons: Record<string, string> = {
-  CRICKET: "/icons/cricket.svg",
-  BADMINTON: "/icons/badminton.svg",
-  FOOTBALL: "/icons/football.svg",
-  CHESS: "/icons/chess.svg",
-  TUGOFWAR: "/icons/tow.svg",
-  KABADDI: "/icons/kabaddi.svg",
-  HANDBALL: "/icons/handball.svg",
-  CARROM: "/icons/carrom.svg",
-  TENNNIS: "/icons/tt.svg",
+  CRICKET: '/icons/cricket.svg',
+  BADMINTON: '/icons/badminton.svg',
+  FOOTBALL: '/icons/football.svg',
+  CHESS: '/icons/chess.svg',
+  TUGOFWAR: '/icons/tow.svg',
+  KABADDI: '/icons/kabaddi.svg',
+  HANDBALL: '/icons/handball.svg',
+  CARROM: '/icons/carrom.svg',
+  TENNNIS: '/icons/tt.svg',
 };
 
 const SkeletonLoader = () => (
-  <div className="animate-pulse">
-    <div className="w-32 h-8 bg-gray-300 rounded mb-6" />
-    <div className="w-[28rem] h-[30rem] bg-gray-300 rounded-lg mb-6" />
-    <div className="space-y-4">
-      <div className="w-48 h-6 bg-gray-300 rounded" />
-      <div className="w-40 h-6 bg-gray-300 rounded" />
-      <div className="w-36 h-6 bg-gray-300 rounded mb-2" />
-      <div className="space-y-2">
-        <div className="w-52 h-6 bg-gray-300 rounded" />
-        <div className="w-52 h-6 bg-gray-300 rounded" />
+  <div className="animate-pulse space-y-8">
+    {/* Event Title Skeleton */}
+    <div className="w-48 h-10 bg-gray-700 rounded mx-auto" />
+
+    {/* Grid Layout Skeleton */}
+    <div className="grid md:grid-cols-2 gap-8">
+      {/* Left Column - Image and Buttons */}
+      <div className="flex flex-col items-center space-y-6">
+        {/* Image Skeleton */}
+        <div className="w-full md:w-[28rem] h-[30rem] bg-gray-700 rounded-lg" />
+
+        {/* Buttons Skeleton */}
+        <div className="flex flex-wrap gap-4 justify-center">
+          <div className="w-32 h-10 bg-gray-700 rounded" />
+          <div className="w-32 h-10 bg-gray-700 rounded" />
+          <div className="w-32 h-10 bg-gray-700 rounded" />
+        </div>
       </div>
-      <div className="w-44 h-6 bg-gray-300 rounded" />
-      <div className="w-full h-32 bg-gray-300 rounded mt-4" />
-    </div>
-    <div className="flex gap-4 mt-8">
-      <div className="w-32 h-10 bg-gray-300 rounded" />
-      <div className="w-32 h-10 bg-gray-300 rounded" />
+
+      {/* Right Column - Event Details Skeleton */}
+      <div className="space-y-6">
+        {/* Registration Fee Skeleton */}
+        <div className="w-64 h-6 bg-gray-700 rounded" />
+
+        {/* Schedule Skeleton */}
+        <div className="w-72 h-6 bg-gray-700 rounded" />
+
+        {/* Coordinators Skeleton */}
+        <div className="space-y-3">
+          <div className="w-48 h-6 bg-gray-700 rounded" />
+          <div className="w-64 h-6 bg-gray-700 rounded" />
+          <div className="w-56 h-6 bg-gray-700 rounded" />
+        </div>
+
+        {/* Prize Pool Skeleton */}
+        <div className="w-56 h-6 bg-gray-700 rounded" />
+
+        {/* Description Skeleton */}
+        <div className="space-y-2">
+          <div className="w-48 h-6 bg-gray-700 rounded" />
+          <div className="w-full h-4 bg-gray-700 rounded" />
+          <div className="w-full h-4 bg-gray-700 rounded" />
+          <div className="w-3/4 h-4 bg-gray-700 rounded" />
+        </div>
+
+        {/* Links Skeleton */}
+        <div className="flex flex-wrap gap-4">
+          <div className="w-32 h-10 bg-gray-700 rounded" />
+          <div className="w-32 h-10 bg-gray-700 rounded" />
+        </div>
+      </div>
     </div>
   </div>
 );
@@ -113,7 +146,7 @@ export default function EventDetails({ eventname }: { eventname: string }) {
 
   const handleRegister = async () => {
     if (userLoading) {
-      toast.info("Please wait while we check your login status");
+      toast.info('Please wait while we check your login status');
       return;
     }
     if (!userData) {
@@ -121,17 +154,15 @@ export default function EventDetails({ eventname }: { eventname: string }) {
       return;
     }
 
-
     if (
       !userData.phone ||
       !userData.name ||
-      userData.phone.trim() === "" ||
-      userData.name.trim() === ""
+      userData.phone.trim() === '' ||
+      userData.name.trim() === ''
     ) {
-      `/profile?onboarding=true&callback=${encodeURIComponent(`/events/${eventname}`)}`
+      `/profile?onboarding=true&callback=${encodeURIComponent(`/events/${eventname}`)}`;
       return;
     }
-
 
     if (eventData.max_team_size === 1) {
       setIsSoloOpen(true);
@@ -163,14 +194,16 @@ export default function EventDetails({ eventname }: { eventname: string }) {
             </div>
           )}
 
-          <h1 className="text-3xl font-bold font-got mb-6 text-center">{eventData.name}</h1>
+          <h1 className="text-3xl font-bold font-got mb-6 text-center">
+            {eventData.name}
+          </h1>
 
           <div className="grid md:grid-cols-2 gap-8">
             {/* Left column - Image and Buttons */}
             <div className="flex flex-col items-center">
               <div className="relative w-full md:w-[28rem] h-[30rem] mb-6">
                 <Image
-                  src={eventData.image_url || "/placeholder.svg"}
+                  src={eventData.image_url || '/placeholder.svg'}
                   alt={eventData.name}
                   layout="fill"
                   loading="lazy"
@@ -194,7 +227,9 @@ export default function EventDetails({ eventname }: { eventname: string }) {
                     disabled={eventData.registered}
                     className="px-6 bg-purple-600 hover:bg-purple-700"
                   >
-                    {eventData.registered ? "Already Registered" : "Register Now"}
+                    {eventData.registered
+                      ? 'Already Registered'
+                      : 'Register Now'}
                   </Button>
                 )}
               </div>
