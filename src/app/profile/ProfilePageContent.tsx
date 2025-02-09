@@ -15,6 +15,7 @@ import { EventDetailsDialog } from "@/components/profile";
 import type { events } from "@/lib/types";
 import { toast } from "sonner";
 import ProfileSkeleton from "./ProfileSkeleton";
+import { handleSaveChanges } from "@/utils/functions";
 
 export default function ProfilePage() {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -24,8 +25,18 @@ export default function ProfilePage() {
     const [imageLoaded, setImageLoaded] = useState(false);
     const [name, setName] = useState<string | undefined>(undefined);
     const router = useRouter();
-    const [registeredEvents, setRegisteredEvents] = useState<events[]>([]);
     const searchParams = useSearchParams();
+    // Store callback URL from the query params.
+    const [callbackUrl, setCallbackUrl] = useState<string | null>(null);
+    const [registeredEvents, setRegisteredEvents] = useState<events[]>([]);
+    const [selectedEvent, setSelectedEvent] = useState<events | null>(null);
+    const [isEventDialogOpen, setIsEventDialogOpen] = useState(false);
+
+    // Extract callback URL from search params on mount.
+    useEffect(() => {
+        const cb = searchParams.get("callback");
+        setCallbackUrl(cb);
+    }, [searchParams]);
 
     useEffect(() => {
         if (eventsData.length > 0) {
@@ -40,10 +51,6 @@ export default function ProfilePage() {
             toast.info("Finish your profile first");
         }
     }, [searchParams]);
-
-
-    const [selectedEvent, setSelectedEvent] = useState<events | null>(null);
-    const [isEventDialogOpen, setIsEventDialogOpen] = useState(false);
 
     useEffect(() => {
         const readUserSession = async () => {
@@ -66,16 +73,26 @@ export default function ProfilePage() {
         setIsEventDialogOpen(true);
     };
 
+    // A wrapper function for handling profile save.
+    const handleProfileSave = async (formData: FormData) => {
+        // Assuming handleSaveChanges returns a promise that resolves on success.
+        await handleSaveChanges(formData, userData, updateUserData, () => {
+            setIsEditModalOpen(false);
+            // Redirect after saving if a callback URL is provided.
+            if (callbackUrl) {
+                router.push(callbackUrl);
+            }
+        });
+    };
+
     if (userLoading) {
-        return (
-            <ProfileSkeleton />
-        );
+        return <ProfileSkeleton />;
     }
 
     return (
         <div className="min-h-screen mt-32">
             <main className="max-w-6xl mx-auto px-4 py-8">
-            <div className="bg-card rounded-xl bg-purple-800/30 backdrop-blur-lg p-8 shadow-lg border border-white/20">
+                <div className="bg-card rounded-xl bg-purple-800/30 backdrop-blur-lg p-8 shadow-lg border border-white/20">
                     <div className="flex flex-col md:flex-row gap-6 items-start">
                         <Avatar className="w-32 h-32">
                             {!imageLoaded && <Skeleton className="w-full h-full rounded-full absolute inset-0" />}
@@ -89,8 +106,12 @@ export default function ProfilePage() {
                         </Avatar>
                         <div className="space-y-4 flex-1">
                             <div>
-                                <h1 className="text-2xl font-semibold font-sargento text-white">{userData?.name ? userData?.name : name}</h1>
-                                <p className="text-muted-foreground text-white font-instrumentSans">{userData?.email}</p>
+                                <h1 className="text-2xl font-semibold font-sargento text-white">
+                                    {userData?.name ? userData?.name : name}
+                                </h1>
+                                <p className="text-muted-foreground text-white font-instrumentSans">
+                                    {userData?.email}
+                                </p>
                             </div>
                             <div className="flex gap-4">
                                 <Button variant="outline" onClick={() => setIsEditModalOpen(true)}>
@@ -128,10 +149,14 @@ export default function ProfilePage() {
                 userData={userData}
                 updateUserData={updateUserData}
                 profileImage={profileImage}
+                onSave={handleProfileSave}
             />
 
-            <EventDetailsDialog event={selectedEvent} open={isEventDialogOpen} onOpenChange={setIsEventDialogOpen} userId={userData?.id!}
-
+            <EventDetailsDialog
+                event={selectedEvent}
+                open={isEventDialogOpen}
+                onOpenChange={setIsEventDialogOpen}
+                userId={userData?.id!}
             />
         </div>
     );
