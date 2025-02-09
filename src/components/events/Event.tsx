@@ -48,7 +48,7 @@ export default function EventPage() {
 
   return (
     <div className="min-h-screen w-full bg-transparent text-white relative overflow-hidden">
-      <div className="container mx-auto px-4 py-20">
+      <div className="container mx-auto px-4 py-20 mt-10">
         <Heading text="EVENTS" />
         <motion.div
           ref={ref}

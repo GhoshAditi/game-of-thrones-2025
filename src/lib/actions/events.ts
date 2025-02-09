@@ -8,7 +8,7 @@ export const populateEventDetails = async (set: any) => {
     set({ eventsData: data, eventsLoading: false });
 };
 
-export const update_and_populate = async (set: any, id: string, data: any) => {
+export const update_and_populate_events = async (set: any, id: string, data: any) => {
     set({ eventsLoading: true });
     await updateEventById(id, data);
     const updatedData = await getEventsData();
