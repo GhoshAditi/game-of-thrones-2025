@@ -17,8 +17,8 @@ interface EditProfileDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     userData: any;
-    updateUserData: (updatedData: any) => Promise<void> | void;
     profileImage?: string;
+    name?: string;
     onSave: (formData: FormData) => Promise<void>;
 }
 
@@ -26,7 +26,7 @@ export const EditProfileDialog: FC<EditProfileDialogProps> = ({
     open,
     onOpenChange,
     userData,
-    updateUserData,
+    name,
     profileImage,
     onSave,
 }) => {
@@ -59,7 +59,7 @@ export const EditProfileDialog: FC<EditProfileDialogProps> = ({
                             <Input
                                 id="fullName"
                                 name="fullName"
-                                defaultValue={userData?.name}
+                                defaultValue={userData?.name || name}
                                 className="bg-black border border-gray-500 focus:border-[#8B5CF6] focus:outline-none text-white rounded-md"
                                 placeholder="Enter your full name"
                             />

@@ -194,6 +194,7 @@ export function SoloEventRegistration({
                                 </label>
                                 <Input
                                     id="college"
+                                    autoFocus
                                     {...registerSoloLead("college")}
                                     className="bg-black border border-gray-500 focus:border-[#8B5CF6] focus:outline-none text-white rounded-md"
                                     placeholder="Enter your college name"

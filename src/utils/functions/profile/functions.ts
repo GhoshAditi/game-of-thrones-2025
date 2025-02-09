@@ -9,7 +9,10 @@ export const handleSaveChanges = async (
 ) => {
     const formDataObj = Object.fromEntries(formData.entries());
 
-    if (!formDataObj.fullName) {
+    if (!formDataObj.gender) {
+        toast.error("Gender is required");
+        return
+    } else if (!formDataObj.fullName) {
         toast.error("Full name is required");
         return;
     } else if (!formDataObj.phone) {

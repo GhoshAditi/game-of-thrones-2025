@@ -69,9 +69,9 @@ export default function EventsTable() {
         const now = new Date()
         const registeredDate = new Date(item.registeredat)
         const hoursDiff = (now.getTime() - registeredDate.getTime()) / (1000 * 60 * 60)
-
+  
         switch (registeredAtFilter) {
-          case "Last 24 hours":
+          case "Last 24 hours":   
             return hoursDiff <= 24
           case "Last 7 days":
             return hoursDiff <= 24 * 7
