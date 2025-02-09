@@ -97,12 +97,10 @@ export default function EventDetails({ eventname }: { eventname: string }) {
   const { userData, userLoading } = useUser();
   const router = useRouter();
 
-  // Derive eventData directly from the hook data
   const eventData = eventsData.find(
     (e) => e.name.toLowerCase() === eventname.toLowerCase()
   );
 
-  // While loading or if event not found, show loader or a fallback
   if (eventsLoading || !eventData) {
     return (
       <Wrapper>
@@ -114,7 +112,6 @@ export default function EventDetails({ eventname }: { eventname: string }) {
   }
 
   const handleRegister = async () => {
-    // Check if the user is logged in
     if (userLoading) {
       toast.info("Please wait while we check your login status");
       return;
@@ -124,7 +121,6 @@ export default function EventDetails({ eventname }: { eventname: string }) {
       return;
     }
 
-    // Check if user's phone or name is missing or empty
     if (
       !userData.phone ||
       !userData.name ||
@@ -135,7 +131,6 @@ export default function EventDetails({ eventname }: { eventname: string }) {
       return;
     }
 
-    // Proceed with registration based on the event type
     if (eventData.max_team_size === 1) {
       setIsSoloOpen(true);
     } else {
@@ -145,111 +140,122 @@ export default function EventDetails({ eventname }: { eventname: string }) {
 
   return (
     <Wrapper>
-      <div className="min-h-screen w-full mt-14 text-white flex flex-col items-center py-16 px-4 relative">
-        {/* Subtle Blurred Background */}
+      <div className="min-h-screen w-full mt-14 text-white py-16 px-4 relative">
+        {/* Background effects */}
         <div className="absolute inset-0 overflow-hidden -z-10">
           <div className="absolute -right-1/4 top-1/4 w-[800px] h-[800px] bg-[#FFB98E] rounded-full blur-[150px] opacity-20" />
           <div className="absolute -left-1/4 bottom-1/4 w-[600px] h-[600px] bg-[#6C4AE7] rounded-full blur-[150px] opacity-10" />
         </div>
 
-        {eventIcons[eventData.name] && (
-          <div className="absolute -top-20 left-16 w-[28rem] h-[28rem]">
-            <Image
-              src={eventIcons[eventData.name] || "/placeholder.svg"}
-              alt={eventData.name}
-              width={512}
-              height={256}
-              loading="lazy"
-              placeholder="blur"
-            />
-          </div>
-        )}
-
-        <h1 className="text-3xl font-bold font-got mb-6">{eventData.name}</h1>
-
-        <div className="relative w-[28rem] h-[30rem] mb-6">
-          <Image
-            src={eventData.image_url || "/placeholder.svg"}
-            alt={eventData.name}
-            layout="fill"
-            loading="lazy"
-            className="object-fit rounded-lg"
-          />
-        </div>
-
-        {/* Main Event Details */}
-        <div className="max-w-[28rem] space-y-3 font-bold">
-          <p className="text-2xl">
-            Registration Fee: {eventData.registration_fees}
-          </p>
-          <p className="text-2xl">
-            Schedule: {parseWithQuillStyles(eventData.schedule)}
-          </p>
-          <h2 className="text-2xl font-semibold mb-3">Coordinators:</h2>
-          <ul className="space-y-2 text-xl">
-            {eventData.coordinators.map((coordinator, index) => (
-              <li key={index} className="text-gray-300">
-                {coordinator.name} - {coordinator.phone}
-              </li>
-            ))}
-          </ul>
-          <p className="text-3xl">Prize Pool: {eventData.prize_pool}</p>
-          <br />
-          <p>Description:</p>
-          <div>{parseWithQuillStyles(eventData.description)}</div>
-
-          {eventData.links && eventData.links.length > 0 && (
-            <div className="mt-4 flex flex-wrap gap-4">
-              {eventData.links.map((link, index) => (
-                <Link
-                  key={index}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Button variant="outline" className="px-6 text-black">
-                    {link.title}
-                  </Button>
-                </Link>
-              ))}
+        <div className="max-w-7xl mx-auto">
+          {/* Event Icon */}
+          {eventIcons[eventData.name] && (
+            <div className="absolute -top-20 left-16 w-[28rem] h-[28rem] hidden md:block">
+              <Image
+                src={eventIcons[eventData.name]}
+                alt={eventData.name}
+                width={512}
+                height={256}
+                loading="lazy"
+              />
             </div>
           )}
+
+          <h1 className="text-3xl font-bold font-got mb-6 text-center">{eventData.name}</h1>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Left column - Image and Buttons */}
+            <div className="flex flex-col items-center">
+              <div className="relative w-full md:w-[28rem] h-[30rem] mb-6">
+                <Image
+                  src={eventData.image_url || "/placeholder.svg"}
+                  alt={eventData.name}
+                  layout="fill"
+                  loading="lazy"
+                  className="object-fit rounded-lg"
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-wrap gap-4 justify-center mb-8">
+                <Link href="/events">
+                  <Button variant="outline" className="px-6 text-black">
+                    Back to Events
+                  </Button>
+                </Link>
+
+                <RulesDialog rules={eventData.rules} />
+
+                {eventData.reg_status && (
+                  <Button
+                    onClick={handleRegister}
+                    disabled={eventData.registered}
+                    className="px-6 bg-purple-600 hover:bg-purple-700"
+                  >
+                    {eventData.registered ? "Registered" : "Register Now"}
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            {/* Right column - Event Details */}
+            <div className="space-y-6">
+              <div className="space-y-3 font-bold">
+                <p className="text-2xl">
+                  Registration Fee: {eventData.registration_fees}
+                </p>
+                <p className="text-2xl">
+                  Schedule: {parseWithQuillStyles(eventData.schedule)}
+                </p>
+                <h2 className="text-2xl font-semibold">Coordinators:</h2>
+                <ul className="space-y-2 text-xl">
+                  {eventData.coordinators.map((coordinator, index) => (
+                    <li key={index} className="text-gray-300">
+                      {coordinator.name} - {coordinator.phone}
+                    </li>
+                  ))}
+                </ul>
+                <p className="text-3xl">Prize Pool: {eventData.prize_pool}</p>
+                <div className="mt-6">
+                  <p className="text-2xl mb-4">Description:</p>
+                  <div>{parseWithQuillStyles(eventData.description)}</div>
+                </div>
+              </div>
+
+              {eventData.links && eventData.links.length > 0 && (
+                <div className="flex flex-wrap gap-4">
+                  {eventData.links.map((link, index) => (
+                    <Link
+                      key={index}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Button variant="outline" className="px-6 text-black">
+                        {link.title}
+                      </Button>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
-        {/* Actions */}
-        <div className="flex flex-wrap gap-4 mt-8 justify-center">
-          <Link href="/events">
-            <Button variant="outline" className="px-6 text-black">
-              Back to Events
-            </Button>
-          </Link>
-
-          <RulesDialog rules={eventData.rules} />
-          <SoloEventRegistration
-            isOpen={isSoloOpen}
-            eventID={eventData.id}
-            onClose={() => setIsSoloOpen(false)}
-            eventName={eventData.name}
-          />
-          <TeamEventRegistration
-            isOpen={isTeamOpen}
-            onClose={() => setIsTeamOpen(false)}
-            eventID={eventData.id}
-            eventName={eventData.name}
-            minTeamSize={Number(eventData.min_team_size)}
-            maxTeamSize={Number(eventData.max_team_size)}
-          />
-
-          {eventData.reg_status && (
-            <Button
-              onClick={handleRegister}
-              disabled={eventData.registered}
-              className="px-6 bg-purple-600 hover:bg-purple-700"
-            >
-              {eventData.registered ? "Registered" : "Register Now"}
-            </Button>
-          )}
-        </div>
+        <SoloEventRegistration
+          isOpen={isSoloOpen}
+          eventID={eventData.id}
+          onClose={() => setIsSoloOpen(false)}
+          eventName={eventData.name}
+        />
+        <TeamEventRegistration
+          isOpen={isTeamOpen}
+          onClose={() => setIsTeamOpen(false)}
+          eventID={eventData.id}
+          eventName={eventData.name}
+          minTeamSize={Number(eventData.min_team_size)}
+          maxTeamSize={Number(eventData.max_team_size)}
+        />
       </div>
     </Wrapper>
   );

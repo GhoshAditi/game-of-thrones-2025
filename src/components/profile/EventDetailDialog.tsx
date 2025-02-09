@@ -24,36 +24,46 @@ interface TeamMember {
 
 export function EventDetailsDialog({ event, open, onOpenChange, userId }: EventDetailsDialogProps) {
     const [teamMembers, setTeamMembers] = useState<TeamMember[]>([])
+    const [teamName, setTeamName] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
     const isMobile = useIsMobile()
 
     // Use a ref to store cached data for each event
-    const teamMembersCache = useRef<Record<string, TeamMember[]>>({})
+    const teamDataCache = useRef<Record<string, { teamName: string | null; members: TeamMember[] }>>({})
 
     useEffect(() => {
         if (event && open) {
             // If data is already cached for this event, use it and skip fetching.
-            if (teamMembersCache.current[event.id]) {
-                setTeamMembers(teamMembersCache.current[event.id])
+            if (teamDataCache.current[event.id]) {
+                setTeamName(teamDataCache.current[event.id].teamName)
+                setTeamMembers(teamDataCache.current[event.id].members)
                 return
             }
 
-            const loadTeamMembers = async () => {
+            const loadTeamData = async () => {
                 setLoading(true)
                 try {
                     const data = await fetchRegistrationDetails(event.id, userId)
-                    setTeamMembers(data)
-                    // Cache the fetched data by event id.
-                    teamMembersCache.current[event.id] = data
+                    console.log("Fetched Data:", data);
+
+                    
+                    const members = data.length > 0 && data[0].team_members ? data[0].team_members : []
+                    const fetchedTeamName = data.length > 0 && data[0].team_name ? data[0].team_name : null
+
+                    setTeamMembers(members)
+                    setTeamName(fetchedTeamName)
+
+                    
+                    teamDataCache.current[event.id] = { teamName: fetchedTeamName, members }
                 } catch (error) {
-                    console.error("Error fetching team members:", error)
-                    toast.error("Failed to fetch team members")
+                    console.error("Error fetching team data:", error)
+                    toast.error("Failed to fetch team details")
                 } finally {
                     setLoading(false)
                 }
             }
 
-            loadTeamMembers()
+            loadTeamData()
         }
     }, [event, open, userId])
 
@@ -62,6 +72,14 @@ export function EventDetailsDialog({ event, open, onOpenChange, userId }: EventD
     // ContentWrapper can optionally render children.
     const ContentWrapper = ({ children }: { children?: React.ReactNode }) => (
         <div className="mt-4 space-y-4">
+            {loading ? (
+                <Skeleton className="h-6 w-2/3 mb-4" />
+            ) : teamName ? (
+                <h3 className="text-xl font-semibold text-white text-center">Team: {teamName}</h3>
+            ) : (
+                <p className="text-gray-300 text-center">No team name available</p>
+            )}
+
             <div>
                 {loading ? (
                     <div className={`grid ${isMobile ? "grid-cols-1" : "grid-cols-1 md:grid-cols-2"} gap-4`}>
@@ -84,7 +102,7 @@ export function EventDetailsDialog({ event, open, onOpenChange, userId }: EventD
                         ))}
                     </div>
                 ) : (
-                    <p className="text-gray-300">No team members found.</p>
+                    <p className="text-gray-300 text-center">No team members found.</p>
                 )}
             </div>
             {children}
@@ -97,7 +115,7 @@ export function EventDetailsDialog({ event, open, onOpenChange, userId }: EventD
                 <DrawerContent className="bg-zinc-900 text-white border-t border-zinc-800">
                     <DrawerHeader className="border-b border-zinc-800">
                         <DrawerTitle className="text-2xl font-got !tracking-widest">{event.name}</DrawerTitle>
-                        <DrawerDescription className="text-sm text-gray-300">Team Members</DrawerDescription>
+                        <DrawerDescription className="text-sm text-gray-300">Team Details</DrawerDescription>
                     </DrawerHeader>
                     <div className="p-4">
                         <ContentWrapper />
@@ -112,7 +130,7 @@ export function EventDetailsDialog({ event, open, onOpenChange, userId }: EventD
             <DialogContent className="bg-zinc-900 text-white border-zinc-800 min-w-xl max-w-3xl">
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-got !tracking-widest">{event.name}</DialogTitle>
-                    <DialogDescription className="text-sm text-gray-300">Team Members</DialogDescription>
+                    <DialogDescription className="text-sm text-gray-300">Team Details</DialogDescription>
                 </DialogHeader>
                 <ContentWrapper />
             </DialogContent>

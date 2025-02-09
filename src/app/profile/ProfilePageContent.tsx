@@ -75,7 +75,7 @@ export default function ProfilePage() {
     return (
         <div className="min-h-screen mt-32">
             <main className="max-w-6xl mx-auto px-4 py-8">
-                <div className="bg-card rounded-xl bg-violet-500 p-8 shadow-sm">
+            <div className="bg-card rounded-xl bg-purple-800/30 backdrop-blur-lg p-8 shadow-lg border border-white/20">
                     <div className="flex flex-col md:flex-row gap-6 items-start">
                         <Avatar className="w-32 h-32">
                             {!imageLoaded && <Skeleton className="w-full h-full rounded-full absolute inset-0" />}

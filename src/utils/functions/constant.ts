@@ -61,69 +61,53 @@ const navRoutes = [
         },
       ],
     },
-    {
-      title: "For Event Details",
-      members: [
-        {
-          name: "Shatabdi Das",
-          role: "",
-          phone: "+91 9051805749",
-        },
-      ],
-    },
-    {
-      title: "For Sponsorship",
-      members: [
-        {
-          name: "Aranya Nandi",
-          role: "",
-          phone: "+91 6296851026",
-        },
-      ],
-    },
+   
     {
       title: "SWC Student Representatives",
       members: [
         {
-          name: "Md. Sabique",
+          name: "Basant Kumar Shaw",
           role: "General Secretary",
-          phone: "+91 8017328234",
+          phone: "+91 7547927975",
         },
         {
-          name: "Tridibes Pal",
+          name: "Subhranil Saha",
           role: " Assistant General Secretary, Sports",
-          phone: "+91 8327656606",
+          phone: "+91 8101696445",
         },
         {
-          name: "Shourya Shikhar Ghosh",
+          name: "Ankita Dhara",
           role: " Assistant General Secretary, Tech",
-          phone: "+91 9732020301",
+          phone: "+91 8820534958",
         },
         {
-          name: "Sankalpa Aich",
+          name: "Manish Biswas",
           role: "Assistant General Secretary, Cultural",
-          phone: "+91 8910498851",
+          phone: "+91 9062312650",
         },
       ],
     },
   ];
   
-   export const gallery = [
-    "https://i.imgur.com/SHBXkRE.jpg",
-    "https://i.imgur.com/u2P39Nq.jpg",
-    "https://i.imgur.com/s9Wk8Y0.jpg",
-    "https://i.imgur.com/g88ASiX.jpg",
-    "https://i.imgur.com/DTgsRgf.jpg",
-    "https://i.imgur.com/EKK6eT3.jpg",
-    "https://i.imgur.com/4PEK53m.jpg",
-    "https://i.imgur.com/wltRKfO.jpg",
-    "https://i.imgur.com/NBlrs4A.jpg",
-    "https://i.imgur.com/SuhFhE9.jpg",
-    "https://i.imgur.com/Eva7WcO.jpg",
-    "https://i.imgur.com/wrrNl9y.jpg",
-    "https://i.imgur.com/1g5f0Tc.jpg",
-    "https://i.imgur.com/EkSWxv6.jpg",
-    "https://i.imgur.com/1KFoy84.jpg",
+  export const gallery = [
+    "https://i.postimg.cc/0Q4ZQ0dC/DSC-0099.jpg",
+    "https://i.postimg.cc/0j8thyfT/IMG-2439.jpg",
+    "https://i.postimg.cc/kXGsSZhv/DSC-0001.jpg",
+    "https://i.postimg.cc/g2wgC5V2/DSC-0013.jpg",
+    "https://i.postimg.cc/prGB7Yyj/DSC-0020.jpg",
+    "https://i.postimg.cc/zGRkthNL/DSC-0029.jpg",
+    "https://i.postimg.cc/J7PKGmKh/DSC-0083.jpg",
+    "https://i.postimg.cc/cLVF0mhM/DSC-0094.jpg",
+    "https://i.postimg.cc/vHKztzJF/DSC-0133.jpg",
+    "https://i.postimg.cc/1XJWS17f/DSC-0254.jpg",
+    "https://i.postimg.cc/R0KXFHbr/DSC-0288.jpg",
+    "https://i.postimg.cc/q7Vx97B1/DSC-0846.jpg",
+    "https://i.postimg.cc/DZh5bwtS/DSC-1649.jpg",
+    "https://i.postimg.cc/Y0q3by2k/DSC-7564.jpg",
+    "https://i.postimg.cc/FsCPnmJ6/DSC-7828.jpg",
+    "https://i.postimg.cc/1tKB0ZQJ/DSC-9447.jpg",
+    "https://i.postimg.cc/dQBNrGQw/IMG-2511.jpg",
+    "https://i.postimg.cc/YqCn3jjg/IMG-2822.jpg",
   ];
   export const locations = [
     {
