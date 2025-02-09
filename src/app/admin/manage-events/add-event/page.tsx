@@ -10,46 +10,25 @@ import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
 import "react-quill/dist/quill.snow.css"
 import { BasicInformation, ScheduleAndDescription, RulesAndGuidelines, LinksAndCoordinators } from "../components"
-import { addEvent } from "@/utils/functions/addEvent"
-import { Coordinator, Link } from "@/lib/types/events"
-
-const formSchema = z.object({
-  name: z.string().min(2, "Event name must be at least 2 characters"),
-  price: z.string(),
-  prize: z.string(),
-  imagePath: z.string().url("Please enter a valid image URL"),
-  minTeamSize: z.coerce.number().min(1, "Minimum team size must be at least 1"),
-  maxTeamSize: z.coerce.number().min(1, "Maximum team size must be at least 1"),
-  schedule: z.string(),
-  description: z.string(),
-  rules: z.string(),
-  coordinators: z.array(
-    z.object({
-      name: z.string(),
-      phone: z.string()
-    })
-  ).optional(),
-  links: z.array(
-    z.object({
-      title: z.string(),
-      url: z.string().url(),
-    })
-  ).optional(),
-});
+import { addEvent } from "@/utils/functions/events/addEvent"
+import { Coordinator, Link } from "@/lib/types"
+import { eventSchema } from "@/lib/schemas"
+import { useEvents } from "@/lib/stores"
 
 
 export default function AddEventPage() {
   const [links, setLinks] = useState<Link[]>([])
   const [coordinators, setCoordinators] = useState<Coordinator[]>([])
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const { setEventsData } = useEvents()
+  const form = useForm<z.infer<typeof eventSchema>>({
+    resolver: zodResolver(eventSchema),
     defaultValues: {
       name: "",
-      price: "",
-      prize: "",
-      imagePath: "",
-      minTeamSize: 1,
-      maxTeamSize: 1,
+      registration_fees: 0,
+      prize_pool: 0,
+      image_url: "",
+      min_team_size: 1,
+      max_team_size: 1,
       schedule: "",
       description: "",
       rules: "",
@@ -58,23 +37,23 @@ export default function AddEventPage() {
     },
   })
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof eventSchema>) {
     try {
-      console.log(values)
-      console.log("submitting")
       const eventData = {
         ...values,
-        minTeamSize: Number(values.minTeamSize),
-        maxTeamSize: Number(values.maxTeamSize),
+        min_team_size: Number(values.min_team_size),
+        max_team_size: Number(values.max_team_size),
         links: links,
         coordinators: coordinators,
       }
-      console.log(eventData)
       await addEvent(eventData)
-      console.log("submitted")
+      setEventsData() 
       toast.success("Event created!")
-    } catch (error) {
-      toast.error("Failed to create event.")
+      form.reset() // Clears the form fields
+      setLinks([]) // Resets links
+      setCoordinators([]) // Resets coordinators
+    } catch (error: any) {
+      toast.error("Failed to create event. " + error.message)
     }
   }
 
@@ -114,4 +93,3 @@ export default function AddEventPage() {
     </div>
   )
 }
-

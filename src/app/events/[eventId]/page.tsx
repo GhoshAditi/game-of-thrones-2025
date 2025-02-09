@@ -1,38 +1,33 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { events, getEventByName } from '@/lib/events';
 import EventDetails from '@/components/events/EventDetails';
+import { getEventByName } from '@/utils/functions/events/getEvent';
 
-export function generateStaticParams() {
-  return events.map((event) => ({
-    eventId: event.name.toLowerCase(),
-  }));
-}
+// export const dynamic = "force-dynamic";
 
-export function generateMetadata({ 
-  params 
-}: { 
-  params: { eventId: string } 
-}): Metadata {
-  const eventData = getEventByName(decodeURIComponent(params.eventId).toUpperCase());
+export async function generateMetadata({
+  params
+}: {
+  params: { eventId: string }
+}): Promise<Metadata> {
+  // Await the RPC call to get the event data from the database
+  const eventData = await getEventByName(decodeURIComponent(params.eventId));
+
   return {
     title: eventData ? `${eventData.name} - Events` : 'Event Not Found',
     description: eventData ? `Details for ${eventData.name}` : ''
   };
 }
 
-export default function EventDetailsPage({ 
-  params 
-}: { 
-  params: { eventId: string } 
+export default function EventDetailsPage({
+  params
+}: {
+  params: { eventId: string }
 }) {
-  const eventData = getEventByName(decodeURIComponent(params.eventId).toUpperCase());
 
-  if (!eventData) {
+  if (!params.eventId) {
     notFound();
   }
 
-  return <EventDetails eventData={eventData} />;
+  return <EventDetails eventname={decodeURIComponent(params.eventId)} />;
 }
-
-export const dynamicParams = true;

@@ -6,7 +6,7 @@ import { useInView } from 'react-intersection-observer';
 import Link from 'next/link';
 import { Heading } from '../common';
 import EventCard from '@/components/events/EventCard';
-import { events } from '@/lib/events';
+import { useEvents } from '@/lib/stores';
 
 const containerVariants = {
   hidden: {},
@@ -28,7 +28,13 @@ const cardVariants = {
 
 export default function EventPage() {
   const controls = useAnimation();
+  const { eventsData, eventsLoading, setEventsData } = useEvents();
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.2 });
+
+  // In case you want to refresh events on mount, you can call setEventsData() here.
+  useEffect(() => {
+    setEventsData();
+  }, [setEventsData]);
 
   useEffect(() => {
     if (inView) {
@@ -36,38 +42,33 @@ export default function EventPage() {
     }
   }, [controls, inView]);
 
-  const formatSchedule = (schedule: string) => {
-    const [dates, month] = schedule.split(' ');
-    return { dates, month };
-  };
+  if (eventsLoading) {
+    return <div className="min-h-screen w-full flex justify-center items-center">Loading events...</div>;
+  }
 
   return (
     <div className="min-h-screen w-full bg-transparent text-white relative overflow-hidden">
       <div className="container mx-auto px-4 py-20">
         <Heading text="EVENTS" />
-        <motion.div 
-          ref={ref} 
-          initial="hidden" 
-          animate={controls} 
-          variants={containerVariants} 
+        <motion.div
+          ref={ref}
+          initial="hidden"
+          animate={controls}
+          variants={containerVariants}
           className="flex flex-wrap justify-center gap-28"
         >
-          {events.map((event) => {
-            const { dates, month } = formatSchedule(event.schedule);
-            return (
-              <motion.div key={event.name} variants={cardVariants}>
-                <Link href={`/events/${encodeURIComponent(event.name.toLowerCase())}`}>
-                  <EventCard 
-                    title={event.name}
-                    subtitle={event.description}
-                    dates={dates}
-                    month={month}
-                    imageId={event.imagePath}
-                  />
-                </Link>
-              </motion.div>
-            );
-          })}
+          {eventsData.map((event,index) => (
+            <motion.div key={index} variants={cardVariants}>
+              <Link href={`/events/${encodeURIComponent(event.name.toLowerCase())}`}>
+                <EventCard
+                  title={event.name}
+                  subtitle={event.description}
+                  schedule={event.schedule}
+                  image_url={event.image_url}  
+                />
+              </Link>
+            </motion.div>
+          ))}
         </motion.div>
       </div>
     </div>

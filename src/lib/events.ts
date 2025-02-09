@@ -61,6 +61,3 @@ export const events: Event[] = [
   }
 ];
 
-export const getEventByName = (name: string) => {
-  return events.find(event => event.name === name);
-};

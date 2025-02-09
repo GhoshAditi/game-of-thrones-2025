@@ -45,7 +45,7 @@ export function BasicInformation({ form }: { form: any }) {
           />
           <FormField
             control={form.control}
-            name="price"
+            name="registration_fees"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-gray-300">
@@ -70,7 +70,7 @@ export function BasicInformation({ form }: { form: any }) {
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
-            name="prize"
+            name="prize_pool"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-gray-300">Prize Pool</FormLabel>
@@ -90,7 +90,7 @@ export function BasicInformation({ form }: { form: any }) {
           />
           <FormField
             control={form.control}
-            name="imagePath"
+            name="image_url"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-gray-300">Cover Image URL</FormLabel>
@@ -113,7 +113,7 @@ export function BasicInformation({ form }: { form: any }) {
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
-            name="minTeamSize"
+            name="min_team_size"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-gray-300">
@@ -125,8 +125,8 @@ export function BasicInformation({ form }: { form: any }) {
                     min={1}
                     {...form.register("minTeamSize", { valueAsNumber: true })}
                     className="bg-[#1e2432] text-white border-gray-600 focus-visible:ring-[#9158FF] focus-visible:border-[#9158FF]"
+                    {...field}
                   />
-
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -134,7 +134,7 @@ export function BasicInformation({ form }: { form: any }) {
           />
           <FormField
             control={form.control}
-            name="maxTeamSize"
+            name="max_team_size"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-gray-300">
@@ -144,6 +144,7 @@ export function BasicInformation({ form }: { form: any }) {
                   <Input
                     type="number"
                     min={1}
+                    {...field}
                     {...form.register("maxTeamSize", { valueAsNumber: true })}
                     className="bg-[#1e2432] text-white border-gray-600 focus-visible:ring-[#9158FF] focus-visible:border-[#9158FF]"
                   />

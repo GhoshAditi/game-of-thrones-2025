@@ -8,7 +8,7 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
-    
+
     extend: {
       fontFamily: {
         sargento: ['Sargento Gorila', 'sans-serif'],
@@ -18,7 +18,7 @@ const config: Config = {
       colors: {
         regalia: '#c9a747',
         body: '#151515',
-        
+
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -31,6 +31,8 @@ const config: Config = {
       //  },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [
+    require('tailwindcss-animate'),
+  ],
 };
 export default config;
