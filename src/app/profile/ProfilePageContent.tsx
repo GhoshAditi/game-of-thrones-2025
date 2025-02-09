@@ -148,10 +148,11 @@ export default function ProfilePage() {
             <EditProfileDialog
                 open={isEditModalOpen}
                 onOpenChange={setIsEditModalOpen}
-                userData={userData}
+                userData={userData}  
                 updateUserData={updateUserData}
                 profileImage={profileImage}
                 onSave={handleProfileSave}
+                name={name}
             />
 
             <EventDetailsDialog
