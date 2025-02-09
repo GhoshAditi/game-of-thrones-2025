@@ -12,8 +12,6 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { handleSaveChanges } from "@/utils/functions";
-
 
 interface EditProfileDialogProps {
     open: boolean;
@@ -21,6 +19,7 @@ interface EditProfileDialogProps {
     userData: any;
     updateUserData: (updatedData: any) => Promise<void> | void;
     profileImage?: string;
+    onSave: (formData: FormData) => Promise<void>;
 }
 
 export const EditProfileDialog: FC<EditProfileDialogProps> = ({
@@ -29,6 +28,7 @@ export const EditProfileDialog: FC<EditProfileDialogProps> = ({
     userData,
     updateUserData,
     profileImage,
+    onSave,
 }) => {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -37,14 +37,10 @@ export const EditProfileDialog: FC<EditProfileDialogProps> = ({
                     <DialogTitle className="text-white">Edit Profile</DialogTitle>
                 </DialogHeader>
                 <form
-                    onSubmit={(e) => {
+                    onSubmit={async (e) => {
                         e.preventDefault();
-                        handleSaveChanges(
-                            new FormData(e.currentTarget),
-                            userData,
-                            updateUserData,
-                            () => onOpenChange(false)
-                        );
+                        // Pass the form data to the onSave handler
+                        await onSave(new FormData(e.currentTarget));
                     }}
                 >
                     <div className="grid gap-6 py-4">
