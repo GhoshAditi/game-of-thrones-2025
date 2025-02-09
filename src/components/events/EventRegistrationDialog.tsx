@@ -29,7 +29,7 @@ interface SoloEventRegistrationDialogProps {
 // Schema for solo (team lead) details.
 const soloLeadSchema = z.object({
     name: z.string().min(1, "Name is required"),
-    phone: z.string().min(1, "Phone is required"),
+    phone: z.string().regex(/^\d{10,}$/, "Phone must be at least 10 digits"),
     email: z.string().email("Invalid email"),
     college: z.string().min(1, "College is required"),
 });

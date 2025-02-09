@@ -9,14 +9,14 @@ import { supabase } from "./supabase-client";
  * @throws An error if the upload fails.
  */
 export async function uploadPaymentScreenshot(file: File, eventName: string) {
-    // Define the bucket name.
     const bucket = 'fests';
 
-    // Construct the file path. Files will be stored under "got-2025/{eventName}/{fileName}".
-    const filePath = `got-2025/${eventName}/${file.name}`;
-
-    // Upload the file to Supabase Storage.
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const fileName = `${timestamp}-${file.name}`;
+    const filePath = `got-2025/${eventName}/${fileName}`;
     const { data, error } = await supabase.storage.from(bucket).upload(filePath, file);
+
+    console.log(data);
 
     if (error) {
         console.error('Error uploading file:', error);
