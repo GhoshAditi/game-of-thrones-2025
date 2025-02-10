@@ -180,12 +180,10 @@ export function TeamEventRegistration({
     try {
       // Call the registerTeamWithParticipants function.
       const result = await registerTeamWithParticipants(registrationParams)
-      console.log("Registration result:", result)
       markEventAsRegistered(eventID)
       handleDialogClose()
     } catch (error) {
       console.error("Failed to register team:", error)
-      toast.error("Failed to register team. Please try again.")
       setIsRegistering(false)
       return
     }
@@ -478,7 +476,7 @@ export function TeamEventRegistration({
               </div>
             </div>
             <div className="mt-6 flex items-center justify-center">
-              <Image src="/images/qr.png" alt="Payment QR Code" width={200} height={200} className="rounded-lg" />
+              <Image src="/images/qr.jpg" alt="Payment QR Code" width={200} height={200} className="rounded-lg" />
             </div>
             <div className="flex flex-col sm:flex-row gap-4 mt-4">
               <Button
