@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { login } from '@/utils/functions/auth/login';
 import { useUser } from '@/lib/stores/user';
 import { supabase } from '@/utils/functions/supabase-client';
-import { Avatar, AvatarImage} from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { logout } from '@/utils/functions/auth/logout';
@@ -201,6 +201,9 @@ export const SignInButton = () => {
               onLoad={() => setImageLoaded(true)}
               className={imageLoaded ? "block" : "hidden"}
             />
+          <AvatarFallback>
+            {!userLoading && userData?.name ? userData.name.charAt(0) : ""}
+          </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
