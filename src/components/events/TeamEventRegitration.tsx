@@ -180,12 +180,10 @@ export function TeamEventRegistration({
     try {
       // Call the registerTeamWithParticipants function.
       const result = await registerTeamWithParticipants(registrationParams)
-      console.log("Registration result:", result)
       markEventAsRegistered(eventID)
       handleDialogClose()
     } catch (error) {
       console.error("Failed to register team:", error)
-      toast.error("Failed to register team. Please try again.")
       setIsRegistering(false)
       return
     }
