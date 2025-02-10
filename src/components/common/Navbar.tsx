@@ -5,6 +5,14 @@ import { FiMenu, FiArrowUpRight } from 'react-icons/fi';
 import useMeasure from 'react-use-measure';
 import SVGIcon from '../common/SVGIcon';
 import Link from 'next/link';
+import { login } from '@/utils/functions/auth/login';
+import { useUser } from '@/lib/stores/user';
+import { supabase } from '@/utils/functions/supabase-client';
+import { Avatar, AvatarImage} from '@/components/ui/avatar';
+import { Skeleton } from '@/components/ui/skeleton';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import { logout } from '@/utils/functions/auth/logout';
+import { useRouter } from 'next/navigation';
 
 const Navbar = () => {
   return (
@@ -62,8 +70,8 @@ const GlassNavigation = () => {
         <Logo />
 
         <div className="flex flex-row items-center gap-4">
-          <GlassLink text="Coordinator" link="/events" />
-          <Buttons setMenuOpen={setMenuOpen} />
+          {/* <GlassLink text="Coordinator" link="/events" />*/} {/* To be uncommented later */}
+           <Buttons setMenuOpen={setMenuOpen} />
         </div>
       </div>
 
@@ -84,9 +92,8 @@ const Cursor = ({
       initial={false}
       animate={{
         opacity: hovered ? 1 : 0,
-        transform: `scale(${
-          hovered ? 1 : 0
-        }) translateX(-50%) translateY(-50%)`,
+        transform: `scale(${hovered ? 1 : 0
+          }) translateX(-50%) translateY(-50%)`,
       }}
       transition={{ duration: 0.15 }}
       ref={scope}
@@ -107,7 +114,7 @@ const Links = () => (
   <div className="hidden items-center gap-2 md:flex">
     <GlassLink text="Home" link="/" />
     <GlassLink text="Events" link="/events" />
-    <GlassLink text="Team" link="/team" />
+    {/* <GlassLink text="Team" link="/team" /> */}
     <GlassLink text="Gallery" link="/gallery" />
     <GlassLink text="Contacts" link="/contacts" />
   </div>
@@ -144,6 +151,9 @@ const Buttons = ({
   setMenuOpen: Dispatch<SetStateAction<boolean>>;
 }) => (
   <div className="flex items-center gap-4">
+    <div className="block md:hidden">
+      <SignInButton />
+    </div>
     <div className="hidden md:block">
       <SignInButton />
     </div>
@@ -157,16 +167,69 @@ const Buttons = ({
   </div>
 );
 
-const SignInButton = () => {
+export const SignInButton = () => {
+  const { userData, userLoading } = useUser()
+  const [profileImage, setProfileImage] = useState<string | null>(null)
+  const [imageLoaded, setImageLoaded] = useState(false)
+  const router = useRouter()
+
+  useEffect(() => {
+    const readUserSession = async () => {
+      const { data } = await supabase.auth.getSession()
+      if (data?.session?.user.user_metadata?.avatar_url) {
+        setProfileImage(data.session.user.user_metadata.avatar_url)
+      }
+    }
+    readUserSession()
+  }, [])
+
+  if (userLoading) {
+    return (
+      <Skeleton className="w-10 h-10 rounded-full bg-gray-600" />
+    )
+  }
+
+  if (userData && profileImage) {
+    return (
+      <DropdownMenu >
+        <DropdownMenuTrigger>
+          <Avatar className="relative">
+            {!imageLoaded && <Skeleton className="w-10 h-10 rounded-full absolute inset-0" />}
+            <AvatarImage
+              src={profileImage}
+              alt="Profile"
+              onLoad={() => setImageLoaded(true)}
+              className={imageLoaded ? "block" : "hidden"}
+            />
+          </Avatar>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onSelect={() => { router.push('/profile') }}>Profile</DropdownMenuItem>
+          <DropdownMenuItem onSelect={
+            () => {
+              logout()
+              window.location.reload();
+            }
+          }>Logout</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
+  }
+
+
   return (
-    <button className="group relative scale-100 overflow-hidden rounded-lg  py-2 transition-transform hover:scale-105 active:scale-95">
+    <button
+      className="group relative scale-100 overflow-hidden rounded-lg py-2 transition-transform hover:scale-105 active:scale-95"
+      onClick={login}
+    >
       <span className="relative z-10 text-white/90 transition-colors group-hover:text-white bg-blue-500 font-bold rounded-full px-4 py-2">
         Login
       </span>
       <span className="absolute inset-0 z-0 bg-gradient-to-br from-white/20 to-white/5 opacity-0 transition-opacity group-hover:opacity-100" />
     </button>
-  );
-};
+  )
+}
+
 
 const MobileMenu = ({ menuOpen }: { menuOpen: boolean }) => {
   const [ref, { height }] = useMeasure();
@@ -186,7 +249,8 @@ const MobileMenu = ({ menuOpen }: { menuOpen: boolean }) => {
           <TextLink text="Home" link="/" />
           <TextLink text="Team" link="/team" />
           <TextLink text="Events" link="/events" />
-          <SignInButton />
+          <GlassLink text="Gallery" link="/gallery" />
+          <GlassLink text="Contacts" link="/contacts" />
         </div>
       </div>
     </motion.div>

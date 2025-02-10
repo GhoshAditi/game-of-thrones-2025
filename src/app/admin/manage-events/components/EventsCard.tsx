@@ -1,23 +1,6 @@
-'use client';
-
-import React from 'react';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+"use client"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,143 +11,126 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { Badge } from '@/components/ui/badge';
-import Link from 'next/link';
-import { Switch } from '@/components/ui/switch';
-
-interface Event {
-  id: string;
-  name: string;
-  registrationOpen: boolean;
-  date: string;
-  fees: string;
-  prize: string;
-  teamSize: string;
-  description: string;
-  rules: string[];
-  imageUrl: string;
-}
+} from "@/components/ui/alert-dialog"
+import { Badge } from "@/components/ui/badge"
+import Link from "next/link"
+import { Switch } from "@/components/ui/switch"
+import { RulesDialog } from "@/components/events/RulesDialog"
+import { parseWithQuillStyles } from "@/utils/functions/quilParser"
+import { useEvents } from "@/lib/stores"
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface EventCardsProps {
-  events: Event[];
-  onDeleteEvent?: (id: string) => void;
+  onDeleteEvent?: (id: string) => void
 }
 
-export function EventCards({ events, onDeleteEvent }: EventCardsProps) {
-  onDeleteEvent = onDeleteEvent || (() => {});
+function EventCardSkeleton() {
+  return (
+    <Card className="bg-[#1e2432] text-white border-gray-700 w-full overflow-hidden">
+      <div className="flex flex-col md:flex-row">
+        <div className="flex-grow p-8 w-[70%]">
+          <CardHeader>
+            <Skeleton className="h-8 w-3/4 bg-gray-700" />
+            <Skeleton className="h-4 w-1/2 mt-2 bg-gray-700" />
+          </CardHeader>
+          <CardContent className="py-6">
+            <Skeleton className="h-20 w-full bg-gray-700" />
+            <div className="space-y-3 mt-6">
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} className="h-4 w-1/3 bg-gray-700" />
+              ))}
+            </div>
+          </CardContent>
+          <CardFooter className="flex flex-col items-start space-y-4">
+            <Skeleton className="h-6 w-24 bg-gray-700" />
+            <Skeleton className="h-6 w-32 bg-gray-700" />
+            <div className="flex space-x-3">
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} className="h-10 w-24 bg-gray-700" />
+              ))}
+            </div>
+          </CardFooter>
+        </div>
+        <div className="md:w-[30%] relative min-h-[300px] md:min-h-full">
+          <Skeleton className="absolute inset-0 w-full h-full bg-gray-700" />
+        </div>
+      </div>
+    </Card>
+  )
+}
+
+export function EventCards({ onDeleteEvent }: EventCardsProps) {
+  onDeleteEvent = onDeleteEvent || (() => { })
+  const { eventsData, eventsLoading, updateRegisterStatus } = useEvents()
+
+  if (eventsLoading) {
+    return (
+      <div className="space-y-6 w-full max-w-6xl">
+        {[1, 2, 3].map((i) => (
+          <EventCardSkeleton key={i} />
+        ))}
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6 w-full max-w-6xl">
-      {events.map((event) => (
-        <Card
-          key={event.id}
-          className="bg-[#1e2432] text-white border-gray-700 w-full overflow-hidden"
-        >
+      {eventsData.map((event) => (
+        <Card key={event.id} className="bg-[#1e2432] text-white border-gray-700 w-full overflow-hidden">
           <div className="flex flex-col md:flex-row">
             <div className="flex-grow p-8 w-[70%]">
               <CardHeader>
-                <CardTitle className="text-3xl font-bold text-white">
-                  {event.name}
-                </CardTitle>
+                <CardTitle className="text-3xl font-bold text-white">{event.name}</CardTitle>
                 <CardDescription className="text-gray-300 text-lg">
-                  {event.date}
+                  {parseWithQuillStyles(event.schedule)}
                 </CardDescription>
               </CardHeader>
               <CardContent className="py-6">
-                <p className="mb-6 text-gray-100 leading-relaxed">
-                  {event.description}
-                </p>
+                <div className="mb-6 text-gray-100 leading-relaxed">{parseWithQuillStyles(event.description)}</div>
                 <div className="space-y-3">
                   <p>
-                    <span className="font-semibold">Fees:</span> {event.fees}
+                    <span className="font-semibold">Fees:</span> {event.registration_fees}
                   </p>
                   <p>
-                    <span className="font-semibold">Prize:</span> {event.prize}
+                    <span className="font-semibold">Prize:</span> {event.prize_pool}
                   </p>
                   <p>
-                    <span className="font-semibold">Team Size:</span>{' '}
-                    {event.teamSize}
+                    <span className="font-semibold">Team Size:</span>{" "}
+                    {event.min_team_size === event.max_team_size
+                      ? event.min_team_size
+                      : `${event.min_team_size} - ${event.max_team_size}`}
                   </p>
                 </div>
               </CardContent>
               <CardFooter className="flex flex-col items-start space-y-4">
-                <Badge
-                  variant={event.registrationOpen ? 'default' : 'secondary'}
-                  className="mb-2"
-                >
-                  {event.registrationOpen
-                    ? 'Registration Open'
-                    : 'Registration Closed'}
+                <Badge variant={event.reg_status ? "default" : "secondary"} className="mb-2">
+                  {event.reg_status ? "Registration Open" : "Registration Closed"}
                 </Badge>
                 <div className="flex items-center gap-2">
                   <Switch
-                    checked={event.registrationOpen}
-                    onCheckedChange={(checked) => console.log(checked)}
+                    checked={event.reg_status}
+                    onCheckedChange={() => updateRegisterStatus(event.id, !event.reg_status)}
                     className="data-[state=checked]:bg-green-500"
                   />
-                  <span className="text-sm text-muted-foreground">
-                    {' '}
-                    Registration Open{' '}
-                  </span>
+                  <span className="text-sm text-muted-foreground">Registration Open</span>
                 </div>
                 <div className="flex space-x-3">
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="bg-white text-gray-900 hover:bg-gray-100"
-                      >
-                        View Rules
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="bg-[#1e2432] text-white border-gray-700">
-                      <DialogHeader>
-                        <DialogTitle className="text-2xl font-bold text-white">
-                          Rules for {event.name}
-                        </DialogTitle>
-                        <DialogDescription className="text-gray-300">
-                          Please read all rules carefully before registering
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className="mt-6">
-                        <ul className="space-y-3">
-                          {event.rules.map((rule, index) => (
-                            <li key={index} className="flex items-start">
-                              <span className="mr-2">•</span>
-                              <span className="text-gray-100">{rule}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                  <Button
-                    variant="outline"
-                    className="bg-white text-gray-900 hover:bg-gray-100"
-                    asChild
-                  >
-                    <Link href={`/admin/manage-events/${event.id}`}>
-                      Edit Event
-                    </Link>
+                  <RulesDialog rules={event.rules} />
+                  <Button variant="outline" className="bg-white text-gray-900 hover:bg-gray-100" asChild>
+                    <Link href={`/admin/manage-events/${event.id}`}>Edit Event</Link>
                   </Button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button
-                        variant="destructive"
-                        className="bg-red-500 hover:bg-red-600"
-                      >
+                      <Button variant="destructive" className="bg-red-500 hover:bg-red-600">
                         Delete Event
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent className="bg-[#1e2432] text-white border-gray-700">
                       <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          Are you absolutely sure?
-                        </AlertDialogTitle>
+                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                         <AlertDialogDescription className="text-gray-300">
-                          This action cannot be undone. This will permanently
-                          delete the event and remove all data associated with
-                          it.
+                          This action cannot be undone. This will permanently delete the event and remove all data
+                          associated with it.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -185,7 +151,7 @@ export function EventCards({ events, onDeleteEvent }: EventCardsProps) {
             </div>
             <div className="md:w-[30%] relative min-h-[300px] md:min-h-full">
               <img
-                src={event.imageUrl || '/placeholder.svg'}
+                src={event.image_url || "/placeholder.svg"}
                 alt={event.name}
                 className="absolute inset-0 w-full h-full object-cover"
               />
@@ -194,5 +160,6 @@ export function EventCards({ events, onDeleteEvent }: EventCardsProps) {
         </Card>
       ))}
     </div>
-  );
+  )
 }
+
