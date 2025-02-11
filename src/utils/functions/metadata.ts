@@ -10,9 +10,9 @@ export function constructMetaData({
   creator = 'GAME OF THRONES RCCIIT Team 2025',
   generator = 'Next.js',
   publisher = 'GAME OF THRONES',
-  icons = '/favicon.ico',
+  icons = '/favicon.png',
   robots = 'index, follow',
-  image = '/assets/home/got.png',
+  image = '/favicon.png',
 }: {
   title?: string;
   description?: string;

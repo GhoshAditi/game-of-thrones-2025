@@ -19,4 +19,5 @@ export interface userStateType {
 export interface userActionsType {
   setUserData: () => void;
   updateUserData: (data: any) => void;
+  clearUserData: () => void;
 }

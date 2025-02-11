@@ -175,7 +175,7 @@ const Buttons = ({
 );
 
 export const SignInButton = () => {
-  const { userData, userLoading } = useUser();
+  const { userData, userLoading, clearUserData } = useUser();
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [imageLoaded, setImageLoaded] = useState(false);
   const router = useRouter();
@@ -222,9 +222,10 @@ export const SignInButton = () => {
             Profile
           </DropdownMenuItem>
           <DropdownMenuItem
-            onSelect={() => {
-              logout();
-              window.location.reload();
+            onSelect={async () => {
+              await supabase.auth.signOut();
+              localStorage.removeItem('sb-session'); // Adjust based on storage mechanism
+              clearUserData();
             }}
           >
             Logout

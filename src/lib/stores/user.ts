@@ -10,6 +10,7 @@ const userState: userStateType = {
 export const useUser = create<UserStore>((set) => ({
   ...userState,
   setUserData: () => populateUserDetails(set),
+  clearUserData: () => set({ userData: null, userLoading: false }),
   updateUserData: (data: any) => update_and_populate(set, data),
   // Write other reducers with proper actions like above.
 }));

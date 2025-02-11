@@ -62,7 +62,7 @@ export default function EventPage() {
           className="flex flex-wrap justify-center gap-28"
         >
           {eventsData.map((event, index) => (
-            <motion.div key={index} variants={cardVariants}>
+            <div>
               <Link
                 href={`/events/${encodeURIComponent(event.name.toLowerCase())}`}
               >
@@ -73,7 +73,7 @@ export default function EventPage() {
                   image_url={event.image_url}
                 />
               </Link>
-            </motion.div>
+            </div>
           ))}
         </motion.div>
       </div>

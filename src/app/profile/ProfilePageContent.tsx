@@ -19,7 +19,7 @@ import { handleSaveChanges } from '@/utils/functions';
 
 export default function ProfilePage() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const { userData, userLoading, updateUserData } = useUser();
+  const { userData, userLoading, updateUserData, clearUserData } = useUser();
   const { eventsData, eventsLoading } = useEvents();
   const [profileImage, setProfileImage] = useState<string | undefined>(
     undefined
@@ -64,8 +64,9 @@ export default function ProfilePage() {
   }, []);
 
   const handleLogout = async () => {
-    await logout();
-    router.push('/');
+    await supabase.auth.signOut();
+    localStorage.removeItem('sb-session'); // Adjust based on storage mechanism
+    clearUserData();
   };
 
   const handleEventClick = (event: events) => {

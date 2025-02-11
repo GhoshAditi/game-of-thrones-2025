@@ -1,10 +1,18 @@
 import { supabase } from '../supabase-client';
 
 export const logout = async () => {
+  const { data: session } = await supabase.auth.getSession();
+
+  if (!session || !session.session) {
+    console.warn('No active session found.');
+    window.location.href = '/'; // Redirect anyway
+    return;
+  }
+
   const { error } = await supabase.auth.signOut();
   if (error) {
-    throw new Error('Logout failed');
-  } else {
-    window.location.href = '/';
+    console.error('Logout failed:', error.message);
   }
+
+  window.location.href = '/';
 };

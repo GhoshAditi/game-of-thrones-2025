@@ -4,6 +4,7 @@ import { Footer, Navbar } from '@/components/common';
 import { constructMetaData } from '@/utils/functions/metadata';
 import SessionProvider from '@/components/SessionProvider';
 import { Toaster } from 'sonner';
+import Link from 'next/link';
 
 export const metadata: Metadata = constructMetaData({
   title: 'Game Of Thrones 2025',
@@ -17,6 +18,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+        <head>
+        <link rel="icon" type="image/png" href="/favicon.png" />
+      </head>
       <body className={`antialiased`}>
         <Navbar />
         {children}
