@@ -8,9 +8,14 @@ import Link from 'next/link';
 import { login } from '@/utils/functions/auth/login';
 import { useUser } from '@/lib/stores/user';
 import { supabase } from '@/utils/functions/supabase-client';
-import { Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
 import { logout } from '@/utils/functions/auth/logout';
 import { useRouter } from 'next/navigation';
 
@@ -70,8 +75,9 @@ const GlassNavigation = () => {
         <Logo />
 
         <div className="flex flex-row items-center gap-4">
-          {/* <GlassLink text="Coordinator" link="/events" />*/} {/* To be uncommented later */}
-           <Buttons setMenuOpen={setMenuOpen} />
+          {/* <GlassLink text="Coordinator" link="/events" />*/}{' '}
+          {/* To be uncommented later */}
+          <Buttons setMenuOpen={setMenuOpen} />
         </div>
       </div>
 
@@ -92,8 +98,9 @@ const Cursor = ({
       initial={false}
       animate={{
         opacity: hovered ? 1 : 0,
-        transform: `scale(${hovered ? 1 : 0
-          }) translateX(-50%) translateY(-50%)`,
+        transform: `scale(${
+          hovered ? 1 : 0
+        }) translateX(-50%) translateY(-50%)`,
       }}
       transition={{ duration: 0.15 }}
       ref={scope}
@@ -168,57 +175,64 @@ const Buttons = ({
 );
 
 export const SignInButton = () => {
-  const { userData, userLoading } = useUser()
-  const [profileImage, setProfileImage] = useState<string | null>(null)
-  const [imageLoaded, setImageLoaded] = useState(false)
-  const router = useRouter()
+  const { userData, userLoading } = useUser();
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const readUserSession = async () => {
-      const { data } = await supabase.auth.getSession()
+      const { data } = await supabase.auth.getSession();
       if (data?.session?.user.user_metadata?.avatar_url) {
-        setProfileImage(data.session.user.user_metadata.avatar_url)
+        setProfileImage(data.session.user.user_metadata.avatar_url);
       }
-    }
-    readUserSession()
-  }, [])
+    };
+    readUserSession();
+  }, []);
 
   if (userLoading) {
-    return (
-      <Skeleton className="w-10 h-10 rounded-full bg-gray-600" />
-    )
+    return <Skeleton className="w-10 h-10 rounded-full bg-gray-600" />;
   }
 
   if (userData && profileImage) {
     return (
-      <DropdownMenu >
+      <DropdownMenu>
         <DropdownMenuTrigger>
           <Avatar className="relative">
-            {!imageLoaded && <Skeleton className="w-10 h-10 rounded-full absolute inset-0" />}
+            {!imageLoaded && (
+              <Skeleton className="w-10 h-10 rounded-full absolute inset-0" />
+            )}
             <AvatarImage
               src={profileImage}
               alt="Profile"
               onLoad={() => setImageLoaded(true)}
-              className={imageLoaded ? "block" : "hidden"}
+              className={imageLoaded ? 'block' : 'hidden'}
             />
-          <AvatarFallback>
-            {!userLoading && userData?.name ? userData.name.charAt(0) : ""}
-          </AvatarFallback>
+            <AvatarFallback>
+              {!userLoading && userData?.name ? userData.name.charAt(0) : ''}
+            </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem onSelect={() => { router.push('/profile') }}>Profile</DropdownMenuItem>
-          <DropdownMenuItem onSelect={
-            () => {
-              logout()
+          <DropdownMenuItem
+            onSelect={() => {
+              router.push('/profile');
+            }}
+          >
+            Profile
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onSelect={() => {
+              logout();
               window.location.reload();
-            }
-          }>Logout</DropdownMenuItem>
+            }}
+          >
+            Logout
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-    )
+    );
   }
-
 
   return (
     <button
@@ -230,9 +244,8 @@ export const SignInButton = () => {
       </span>
       <span className="absolute inset-0 z-0 bg-gradient-to-br from-white/20 to-white/5 opacity-0 transition-opacity group-hover:opacity-100" />
     </button>
-  )
-}
-
+  );
+};
 
 const MobileMenu = ({ menuOpen }: { menuOpen: boolean }) => {
   const [ref, { height }] = useMeasure();

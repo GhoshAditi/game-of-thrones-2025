@@ -1,11 +1,11 @@
 export interface Link {
-  title: string
-  url: string
+  title: string;
+  url: string;
 }
 
 export interface Coordinator {
-  name: string
-  phone: string
+  name: string;
+  phone: string;
 }
 
 export interface events {
@@ -30,7 +30,6 @@ export interface events {
   }[];
   registered?: boolean;
 }
-
 
 // The state interface for events.
 export interface EventsStateType {

@@ -1,7 +1,6 @@
-import { Metadata } from "next";
+import { Metadata } from 'next';
 
-import Block from "./_components/Block";
-
+import Block from './_components/Block';
 
 const ContactUs = () => {
   return <Block />;

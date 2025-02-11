@@ -1,6 +1,6 @@
-import { Suspense } from "react"
-import ProfileContent from "./ProfilePageContent"
-import ProfileSkeleton from "./ProfileSkeleton"
+import { Suspense } from 'react';
+import ProfileContent from './ProfilePageContent';
+import ProfileSkeleton from './ProfileSkeleton';
 
 export default function ProfilePage() {
   return (
@@ -8,6 +8,5 @@ export default function ProfilePage() {
     <Suspense fallback={<ProfileSkeleton />}>
       <ProfileContent />
     </Suspense>
-  )
+  );
 }
-

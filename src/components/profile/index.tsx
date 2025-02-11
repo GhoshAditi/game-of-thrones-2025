@@ -1,2 +1,2 @@
-export * from "./EditProfileDialog";
-export * from "./EventDetailDialog";
+export * from './EditProfileDialog';
+export * from './EventDetailDialog';

@@ -1,4 +1,4 @@
-import { supabase } from "./supabase-client";
+import { supabase } from './supabase-client';
 
 /**
  * Generates a UUID string.
@@ -7,15 +7,15 @@ import { supabase } from "./supabase-client";
  * @returns A UUID string.
  */
 function getUUID() {
-    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-        return crypto.randomUUID();
-    }
-    // Fallback: Note that this is not cryptographically secure.
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-        const r = Math.random() * 16 | 0;
-        const v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    });
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  // Fallback: Note that this is not cryptographically secure.
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
 }
 
 /**
@@ -27,29 +27,32 @@ function getUUID() {
  * @throws An error if the upload fails.
  */
 export async function uploadPaymentScreenshot(file: File, eventName: string) {
-    const bucket = 'fests';
+  const bucket = 'fests';
 
-    // Generate a safe unique identifier for the file name.
-    const uuid = getUUID();
-    const fileName = `${uuid}-${file.name}`;
-    const filePath = `got-2025/${eventName}/${fileName}`;
+  // Generate a safe unique identifier for the file name.
+  const uuid = getUUID();
+  const fileName = `${uuid}-${file.name}`;
+  const filePath = `got-2025/${eventName}/${fileName}`;
 
-    const { data, error } = await supabase.storage.from(bucket).upload(filePath, file);
+  const { data, error } = await supabase.storage
+    .from(bucket)
+    .upload(filePath, file);
 
-    console.log(data);
+  console.log(data);
 
-    if (error) {
-        console.error('Error uploading file:', error);
-        throw error;
-    }
+  if (error) {
+    console.error('Error uploading file:', error);
+    throw error;
+  }
 
-    // Get the public URL of the uploaded file.
-    const publicUrl = supabase.storage.from(bucket).getPublicUrl(filePath).data?.publicUrl;
+  // Get the public URL of the uploaded file.
+  const publicUrl = supabase.storage.from(bucket).getPublicUrl(filePath)
+    .data?.publicUrl;
 
-    if (!publicUrl) {
-        throw new Error('Failed to get public URL for the uploaded file.');
-    }
+  if (!publicUrl) {
+    throw new Error('Failed to get public URL for the uploaded file.');
+  }
 
-    // Return the public URL.
-    return publicUrl;
+  // Return the public URL.
+  return publicUrl;
 }

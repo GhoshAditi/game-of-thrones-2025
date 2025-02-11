@@ -1,1 +1,1 @@
-export {default} from './PinSVG';
+export { default } from './PinSVG';

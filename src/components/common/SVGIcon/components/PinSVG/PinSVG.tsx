@@ -10,7 +10,7 @@ const PinSVG: FC<IIconProps> = (props) => {
   } = props;
   return (
     <svg
-    className={className}
+      className={className}
       width={width}
       height={height}
       viewBox="0 0 66 82"

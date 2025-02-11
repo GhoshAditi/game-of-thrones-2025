@@ -66,7 +66,6 @@ body {
   box-shadow: 0 4px 6px -1px rgba(63, 42, 103, 0.9);
 }
 
-
 .my-scrollbar::-webkit-scrollbar {
   width: 12px;
 }

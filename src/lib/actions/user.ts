@@ -11,4 +11,4 @@ export const update_and_populate = async (set: any, data: any) => {
   await updateUserData(data);
   const updatedData = await getUserData();
   set({ userData: updatedData, userLoading: false });
-}
+};

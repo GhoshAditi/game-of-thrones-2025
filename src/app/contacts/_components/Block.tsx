@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Image from "next/image";
-import SectionHeader from "@/components/common/SectionHeader";
-import Committee from "./Committee";
-import Location from "./Location";
+import { useState } from 'react';
+import Image from 'next/image';
+import SectionHeader from '@/components/common/SectionHeader';
+import Committee from './Committee';
+import Location from './Location';
 
 const Block = () => {
   const [selected, setSelected] = useState(true);
-  
+
   return (
     <div className="relative mx-auto min-h-screen overflow-x-hidden pt-20 pb-8">
       <SectionHeader text="Contact Us" />
@@ -17,11 +17,12 @@ const Block = () => {
         <div className="flex flex-row gap-1">
           <Image
             onClick={() => setSelected(true)}
-            src={"/assets/contacts/location.svg"}
+            src={'/assets/contacts/location.svg'}
             className={`w-20 rounded-md border border-b-0 p-2 lg:w-20 cursor-pointer transition-colors duration-200 
-              ${selected 
-                ? 'bg-purple-800 border-purple-500' 
-                : 'hover:bg-purple-300'
+              ${
+                selected
+                  ? 'bg-purple-800 border-purple-500'
+                  : 'hover:bg-purple-300'
               }`}
             height={0}
             width={0}
@@ -29,11 +30,12 @@ const Block = () => {
           />
           <Image
             onClick={() => setSelected(false)}
-            src={"/assets/contacts/people.svg"}
+            src={'/assets/contacts/people.svg'}
             className={`w-20 rounded-md border p-2 cursor-pointer transition-colors duration-200 fill-current text-purple-500
-              ${!selected 
-                ? 'bg-purple-800 border-purple-500' 
-                : 'hover:bg-purple-300'
+              ${
+                !selected
+                  ? 'bg-purple-800 border-purple-500'
+                  : 'hover:bg-purple-300'
               }`}
             height={0}
             width={0}

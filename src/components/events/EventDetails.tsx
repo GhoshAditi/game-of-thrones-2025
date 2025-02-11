@@ -160,7 +160,9 @@ export default function EventDetails({ eventname }: { eventname: string }) {
       userData.phone.trim() === '' ||
       userData.name.trim() === ''
     ) {
-      router.push(`/profile?onboarding=true&callback=${encodeURIComponent(`/events/${eventname}`)}`);
+      router.push(
+        `/profile?onboarding=true&callback=${encodeURIComponent(`/events/${eventname}`)}`
+      );
       return;
     }
 
@@ -239,24 +241,30 @@ export default function EventDetails({ eventname }: { eventname: string }) {
             <div className="space-y-6">
               <div className="space-y-3 font-bold">
                 <p className="text-2xl">
-                  Registration Fee: {eventData.registration_fees}
+                  Registration Fee: ₹{eventData.registration_fees}
                 </p>
                 <p className="text-2xl">
                   Schedule: {parseWithQuillStyles(eventData.schedule)}
                 </p>
-                <h2 className="text-2xl font-semibold">Coordinators:</h2>
-                <ul className="space-y-2 text-xl">
-                  {eventData.coordinators.map((coordinator, index) => (
-                    <li key={index} className="text-gray-300">
-                      {coordinator.name} - {coordinator.phone}
-                    </li>
-                  ))}
-                </ul>
-                <p className="text-3xl">Prize Pool: {eventData.prize_pool}</p>
-                <div className="mt-6">
-                  <p className="text-2xl mb-4">Description:</p>
-                  <div>{parseWithQuillStyles(eventData.description)}</div>
-                </div>
+                {eventData?.coordinators?.length > 0 && (
+                  <>
+                    <h2 className="text-2xl font-semibold">Coordinators:</h2>
+                    <ul className="space-y-2 text-xl">
+                      {eventData.coordinators.map((coordinator, index) => (
+                        <li key={index} className="text-gray-300">
+                          {coordinator.name} - {coordinator.phone}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+                <p className="text-3xl">Prize Pool: ₹{eventData.prize_pool}</p>
+                {eventData?.description?.length > 0 && (
+                  <div className="mt-6">
+                    <p className="text-2xl mb-4">Description:</p>
+                    <div>{parseWithQuillStyles(eventData.description)}</div>
+                  </div>
+                )}
               </div>
 
               {eventData.links && eventData.links.length > 0 && (
@@ -284,6 +292,7 @@ export default function EventDetails({ eventname }: { eventname: string }) {
           eventID={eventData.id}
           onClose={() => setIsSoloOpen(false)}
           eventName={eventData.name}
+          eventFees={eventData.registration_fees}
         />
         <TeamEventRegistration
           isOpen={isTeamOpen}

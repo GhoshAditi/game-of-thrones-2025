@@ -43,11 +43,15 @@ export default function EventPage() {
   }, [controls, inView]);
 
   if (eventsLoading) {
-    return <div className="min-h-screen w-full flex justify-center items-center">Loading events...</div>;
+    return (
+      <div className="min-h-screen w-full flex justify-center items-center">
+        Loading events...
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen w-full bg-transparent text-white relative overflow-hidden">
+    <div className="min-h-screen w-full my-10 bg-transparent text-white relative overflow-hidden">
       <div className="container mx-auto px-4 py-20 mt-10">
         <Heading text="EVENTS" />
         <motion.div
@@ -57,14 +61,16 @@ export default function EventPage() {
           variants={containerVariants}
           className="flex flex-wrap justify-center gap-28"
         >
-          {eventsData.map((event,index) => (
+          {eventsData.map((event, index) => (
             <motion.div key={index} variants={cardVariants}>
-              <Link href={`/events/${encodeURIComponent(event.name.toLowerCase())}`}>
+              <Link
+                href={`/events/${encodeURIComponent(event.name.toLowerCase())}`}
+              >
                 <EventCard
                   title={event.name}
                   subtitle={event.description}
                   schedule={event.schedule}
-                  image_url={event.image_url}  
+                  image_url={event.image_url}
                 />
               </Link>
             </motion.div>

@@ -2,7 +2,6 @@ import EventsTable from './EventsTable';
 import { Suspense } from 'react';
 import TableSkeleton from './TableSkeleton';
 
-
 export default async function EventsDashboard() {
   // Call the RPC function to fetch approval table data
 
@@ -12,7 +11,7 @@ export default async function EventsDashboard() {
         Approve Registrations
       </h1>
       <Suspense fallback={<TableSkeleton />}>
-        <EventsTable  />
+        <EventsTable />
       </Suspense>
     </div>
   );

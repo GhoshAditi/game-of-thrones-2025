@@ -1,1 +1,1 @@
-export {default} from './ContactBgSVG';
+export { default } from './ContactBgSVG';

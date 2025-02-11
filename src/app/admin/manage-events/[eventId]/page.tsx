@@ -18,7 +18,6 @@ import { eventSchema } from '@/lib/schemas';
 import { useEvents } from '@/lib/stores';
 import { EditEventSkeleton } from './EditEventSkeleton';
 
-
 export default function EditEventPage() {
   const params = useParams();
   const eventId = params.eventId as string;

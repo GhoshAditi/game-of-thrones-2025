@@ -3,8 +3,6 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
 const Page = () => {
-  
-
   return (
     <div className="w-full flex flex-col items-center justify-center">
       <Link href="/admin/manage-events/add-event">
@@ -13,7 +11,7 @@ const Page = () => {
       <h1 className="text-white text-4xl md:text-5xl font-bold mb-12 font-sargento">
         Manage Events
       </h1>
-       <EventCards />
+      <EventCards />
     </div>
   );
 };

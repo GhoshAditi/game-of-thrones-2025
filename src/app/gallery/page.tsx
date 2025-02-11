@@ -1,7 +1,7 @@
-import SectionHeader from "@/components/common/SectionHeader";
-import { gallery } from "@/utils/functions/constant";
+import SectionHeader from '@/components/common/SectionHeader';
+import { gallery } from '@/utils/functions/constant';
 
-import GalleryCard from "../../app/gallery/_components/GalleryCard";
+import GalleryCard from '../../app/gallery/_components/GalleryCard';
 
 const Gallery = () => {
   return (
@@ -11,7 +11,6 @@ const Gallery = () => {
         {gallery.map((photo, index) => (
           <GalleryCard photo={photo} key={index} />
         ))}
-        
       </div>
     </div>
   );

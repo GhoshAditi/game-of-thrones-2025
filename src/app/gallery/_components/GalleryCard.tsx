@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import Image from "next/image";
+import React, { useState } from 'react';
+import Image from 'next/image';
 
 const GalleryCard = ({ photo }: { photo: string }) => {
   const [loaded, setLoaded] = useState(false);
@@ -17,7 +17,7 @@ const GalleryCard = ({ photo }: { photo: string }) => {
         alt="image"
         fill={true}
         style={{
-          objectFit: "cover",
+          objectFit: 'cover',
         }}
         onLoad={() => setLoaded(true)}
       />

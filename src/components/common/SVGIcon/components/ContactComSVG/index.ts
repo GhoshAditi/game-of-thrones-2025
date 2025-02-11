@@ -1,1 +1,1 @@
-export {default} from './ContactComSVG';
+export { default } from './ContactComSVG';

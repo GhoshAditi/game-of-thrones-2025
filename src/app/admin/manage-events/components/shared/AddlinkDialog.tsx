@@ -1,38 +1,42 @@
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Link } from "@/lib/types/events"
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Link } from '@/lib/types/events';
 
 interface AddLinkDialogProps {
-  addLink: (link: Link) => void
+  addLink: (link: Link) => void;
 }
 
 export function AddLinkDialog({ addLink }: AddLinkDialogProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [title, setTitle] = useState("")
-  const [url, setUrl] = useState("")
+  const [isOpen, setIsOpen] = useState(false);
+  const [title, setTitle] = useState('');
+  const [url, setUrl] = useState('');
 
   const handleClick = () => {
     if (title && url) {
-      addLink({ title, url })
-      setTitle("")
-      setUrl("")
-      setIsOpen(false)
+      addLink({ title, url });
+      setTitle('');
+      setUrl('');
+      setIsOpen(false);
     }
-  }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="border-[#9158FF] text-[#9158FF] hover:bg-[#9158FF]/20 bg-[#1e2432]">
+        <Button
+          variant="outline"
+          size="sm"
+          className="border-[#9158FF] text-[#9158FF] hover:bg-[#9158FF]/20 bg-[#1e2432]"
+        >
           Add Link
         </Button>
       </DialogTrigger>
@@ -42,7 +46,9 @@ export function AddLinkDialog({ addLink }: AddLinkDialogProps) {
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="title" className="text-right">Title</Label>
+            <Label htmlFor="title" className="text-right">
+              Title
+            </Label>
             <Input
               id="title"
               value={title}
@@ -51,7 +57,9 @@ export function AddLinkDialog({ addLink }: AddLinkDialogProps) {
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="url" className="text-right">URL</Label>
+            <Label htmlFor="url" className="text-right">
+              URL
+            </Label>
             <Input
               id="url"
               value={url}
@@ -67,8 +75,6 @@ export function AddLinkDialog({ addLink }: AddLinkDialogProps) {
           Save Link
         </Button>
       </DialogContent>
-
-
     </Dialog>
-  )
+  );
 }

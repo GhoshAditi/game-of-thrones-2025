@@ -11,7 +11,7 @@ const ContactBg2: React.FC<IIconProps> = (props) => {
 
   return (
     <svg
-        className={className}
+      className={className}
       width={width}
       height={height}
       viewBox="0 0 1110 1635"

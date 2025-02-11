@@ -14,18 +14,21 @@ export async function middleware(req: NextRequest) {
 
   // Redirect if there's no session for admin or profile routes.
   if (!session) {
-    if (url.pathname.startsWith('/admin') || url.pathname.startsWith('/profile')) {
+    if (
+      url.pathname.startsWith('/admin') ||
+      url.pathname.startsWith('/profile')
+    ) {
       return NextResponse.redirect(new URL('/', req.url));
     }
     return res;
   }
 
-
   // Only perform the role check if the user is trying to access an admin route.
   if (url.pathname.startsWith('/admin')) {
     const { data: userRoles, error } = await supabase
       .from('roles')
-      .select(`
+      .select(
+        `
         role,
         event_categories (
           name,
@@ -34,12 +37,12 @@ export async function middleware(req: NextRequest) {
             year
           )
         )
-      `)
+      `
+      )
       .eq('user_id', session.user.id)
       .eq('role', 'super_admin')
       .eq('event_categories.fests.name', 'Game Of Thrones')
       .eq('event_categories.fests.year', 2025);
-
 
     // Redirect to /unauthorised if there's an error or no matching role record.
     if (error || !userRoles || userRoles.length === 0) {

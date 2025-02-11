@@ -1,10 +1,10 @@
-import { supabase } from "../supabase-client";
+import { supabase } from '../supabase-client';
 
 export const logout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-        throw new Error("Logout failed");
-    } else {
-        window.location.href = "/";
-    }
-}
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    throw new Error('Logout failed');
+  } else {
+    window.location.href = '/';
+  }
+};
