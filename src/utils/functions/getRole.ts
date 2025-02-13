@@ -4,7 +4,6 @@ export async function getUserRoles() {
     // Create an instance of the Supabase client
     const supabase = createServerClient();
     const { data } = await supabase.auth.getUser();
-    console.log(data);
 
     // Query the roles table with nested event_categories and fests
     const { data: userRoles, error } = await supabase

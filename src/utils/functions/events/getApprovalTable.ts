@@ -20,6 +20,7 @@ export interface EventData {
   transactionid: string;
   transaction_screenshot: string;
   registeredat: string;
+  team_id: string;
   teammembers: TeamMember[];
 }
 
