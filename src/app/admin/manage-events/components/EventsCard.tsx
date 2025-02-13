@@ -29,6 +29,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 interface EventCardsProps {
   onDeleteEvent?: (id: string) => void;
+  role: string
 }
 
 function EventCardSkeleton() {
@@ -66,8 +67,8 @@ function EventCardSkeleton() {
   );
 }
 
-export function EventCards({ onDeleteEvent }: EventCardsProps) {
-  onDeleteEvent = onDeleteEvent || (() => {});
+export function EventCards({ onDeleteEvent, role }: EventCardsProps) {
+  onDeleteEvent = onDeleteEvent || (() => { });
   const { eventsData, eventsLoading, updateRegisterStatus } = useEvents();
 
   if (eventsLoading) {
@@ -141,48 +142,53 @@ export function EventCards({ onDeleteEvent }: EventCardsProps) {
                 </div>
                 <div className="flex space-x-3">
                   <RulesDialog rules={event.rules} />
-                  <Button
-                    variant="outline"
-                    className="bg-white text-gray-900 hover:bg-gray-100"
-                    asChild
-                  >
-                    <Link href={`/admin/manage-events/${event.id}`}>
-                      Edit Event
-                    </Link>
-                  </Button>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
+                  {role == "super_admin" && (
+                    <>
+
                       <Button
-                        variant="destructive"
-                        className="bg-red-500 hover:bg-red-600"
+                        variant="outline"
+                        className="bg-white text-gray-900 hover:bg-gray-100"
+                        asChild
                       >
-                        Delete Event
+                        <Link href={`/admin/manage-events/${event.id}`}>
+                          Edit Event
+                        </Link>
                       </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent className="bg-[#1e2432] text-white border-gray-700">
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          Are you absolutely sure?
-                        </AlertDialogTitle>
-                        <AlertDialogDescription className="text-gray-300">
-                          This action cannot be undone. This will permanently
-                          delete the event and remove all data associated with
-                          it.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel className="bg-gray-700 text-white hover:bg-gray-600">
-                          Cancel
-                        </AlertDialogCancel>
-                        <AlertDialogAction
-                          className="bg-red-600 text-white hover:bg-red-700"
-                          onClick={() => onDeleteEvent(event.id)}
-                        >
-                          Delete
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="destructive"
+                            className="bg-red-500 hover:bg-red-600"
+                          >
+                            Delete Event
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="bg-[#1e2432] text-white border-gray-700">
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Are you absolutely sure?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription className="text-gray-300">
+                              This action cannot be undone. This will permanently
+                              delete the event and remove all data associated with
+                              it.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel className="bg-gray-700 text-white hover:bg-gray-600">
+                              Cancel
+                            </AlertDialogCancel>
+                            <AlertDialogAction
+                              className="bg-red-600 text-white hover:bg-red-700"
+                              onClick={() => onDeleteEvent(event.id)}
+                            >
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </>
+                  )}
                 </div>
               </CardFooter>
             </div>

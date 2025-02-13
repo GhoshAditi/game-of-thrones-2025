@@ -21,7 +21,7 @@ import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
 import Image from 'next/image';
 
 const COLUMN_WIDTHS = [
-  100, 180, 220, 240, 220, 240, 240, 240, 360, 240, 320, 280,
+  100, 180, 400, 240, 220, 240, 240, 240, 360, 240, 320, 280,
 ];
 const TABLE_WIDTH = COLUMN_WIDTHS.reduce((a, b) => a + b, 0);
 
