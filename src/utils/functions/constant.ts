@@ -90,24 +90,24 @@ export const CommitteeDetails = [
 ];
 
 export const gallery = [
-  'https://i.postimg.cc/0Q4ZQ0dC/DSC-0099.jpg',
-  'https://i.postimg.cc/0j8thyfT/IMG-2439.jpg',
-  'https://i.postimg.cc/kXGsSZhv/DSC-0001.jpg',
-  'https://i.postimg.cc/g2wgC5V2/DSC-0013.jpg',
-  'https://i.postimg.cc/prGB7Yyj/DSC-0020.jpg',
-  'https://i.postimg.cc/zGRkthNL/DSC-0029.jpg',
-  'https://i.postimg.cc/J7PKGmKh/DSC-0083.jpg',
-  'https://i.postimg.cc/cLVF0mhM/DSC-0094.jpg',
-  'https://i.postimg.cc/vHKztzJF/DSC-0133.jpg',
-  'https://i.postimg.cc/1XJWS17f/DSC-0254.jpg',
-  'https://i.postimg.cc/R0KXFHbr/DSC-0288.jpg',
-  'https://i.postimg.cc/q7Vx97B1/DSC-0846.jpg',
-  'https://i.postimg.cc/DZh5bwtS/DSC-1649.jpg',
-  'https://i.postimg.cc/Y0q3by2k/DSC-7564.jpg',
-  'https://i.postimg.cc/FsCPnmJ6/DSC-7828.jpg',
-  'https://i.postimg.cc/1tKB0ZQJ/DSC-9447.jpg',
-  'https://i.postimg.cc/dQBNrGQw/IMG-2511.jpg',
-  'https://i.postimg.cc/YqCn3jjg/IMG-2822.jpg',
+  'https://i.postimg.cc/pyMvz2kR/Whats-App-Image-2025-02-11-at-20-17-17-b834ccdc.jpg',
+  'https://i.postimg.cc/Gtyr4BFX/Whats-App-Image-2025-02-11-at-20-17-18-66d26ea5.jpg',
+  'https://i.postimg.cc/ydW7zpk4/Whats-App-Image-2025-02-11-at-20-17-19-9eb4ad72.jpg',
+  'https://i.postimg.cc/G2Nd3PyB/Whats-App-Image-2025-02-11-at-20-17-19-ba5e454a.jpg',
+  'https://i.postimg.cc/cJxsFLWJ/Whats-App-Image-2025-02-11-at-20-17-20-4e4669c2.jpg',
+  'https://i.postimg.cc/SN9NsPVm/Whats-App-Image-2025-02-11-at-20-17-20-99660ace.jpg',
+  'https://i.postimg.cc/Kj6Gf7cX/Whats-App-Image-2025-02-11-at-20-17-21-2b62d0da.jpg',
+  'https://i.postimg.cc/Kjkctp2r/Whats-App-Image-2025-02-11-at-20-17-21-d5dadba7.jpg',
+  'https://i.postimg.cc/fLbRRTqP/Whats-App-Image-2025-02-11-at-20-17-22-235617ff.jpg',
+  'https://i.postimg.cc/jjtjBhHt/Whats-App-Image-2025-02-11-at-20-17-22-92c21d4c.jpg',
+  'https://i.postimg.cc/bvgvP2gb/Whats-App-Image-2025-02-11-at-20-17-23-a912c099.jpg',
+  'https://i.postimg.cc/cLQHDz8F/Whats-App-Image-2025-02-11-at-20-17-24-9c2580b9.jpg',
+  'https://i.postimg.cc/9Fwz90X5/Whats-App-Image-2025-02-11-at-20-17-24-de4c7621.jpg',
+  'https://i.postimg.cc/vZRTtyD1/Whats-App-Image-2025-02-11-at-20-17-25-3ac86dd2.jpg',
+  'https://i.postimg.cc/59R6jLVS/Whats-App-Image-2025-02-11-at-20-17-25-e0e472ca.jpg',
+  'https://i.postimg.cc/W39tGJJj/Whats-App-Image-2025-02-11-at-20-17-26-4264676a.jpg',
+  'https://i.postimg.cc/T1p1CYrb/Whats-App-Image-2025-02-11-at-20-17-26-ad848201.jpg',
+  'https://i.postimg.cc/QCwtPGby/Whats-App-Image-2025-02-11-at-20-17-27-bcf3dfcc.jpg'
 ];
 export const locations = [
   {
