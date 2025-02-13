@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/tooltip';
 import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
 import Image from 'next/image';
+import { getVerified } from '@/utils/functions/getVerified';
 
 const COLUMN_WIDTHS = [
   100, 180, 400, 240, 220, 240, 240, 240, 360, 240, 320, 280,
@@ -170,11 +171,10 @@ export default function EventsTable() {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <span
-                      className={`px-2 py-1 rounded-md font-medium cursor-pointer ${
-                        item.paymentstatus === 'Verified'
-                          ? 'bg-[#132F21] text-[#4ADE80] border border-[#4ADE80]/20'
-                          : 'bg-[#2A1215] text-[#F87171] border border-[#F87171]/20'
-                      }`}
+                      className={`px-2 py-1 rounded-md font-medium cursor-pointer ${item.paymentstatus === 'Verified'
+                        ? 'bg-[#132F21] text-[#4ADE80] border border-[#4ADE80]/20'
+                        : 'bg-[#2A1215] text-[#F87171] border border-[#F87171]/20'
+                        }`}
                       onClick={() =>
                         item.paymentstatus === 'Not Verified' &&
                         setIsDialogOpen(true)
@@ -222,23 +222,35 @@ export default function EventsTable() {
           </div>
         ))}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent>
+          <DialogContent className="max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <h1 className="text-2xl font-bold text-gray-900">
                 Transaction Screenshot
               </h1>
             </DialogHeader>
-            <Image
-              src={item.transaction_screenshot || '/placeholder.svg'}
-              alt="Transaction Screenshot"
-              layout="responsive"
-              loading="lazy"
-              width={800}
-              height={600}
-              objectFit="contain"
-            />
+            {/* Container for the image with a fixed viewport height */}
+            <div className="relative w-full h-[60vh]">
+              <Image
+                src={item.transaction_screenshot || '/placeholder.svg'}
+                alt="Transaction Screenshot"
+                layout="fill"
+                loading="lazy"
+                objectFit="contain"
+              />
+            </div>
             <Button onClick={() => setIsDialogOpen(false)} className="mt-4">
               Close
+            </Button>
+            <Button
+              onClick={async () => {
+                await getVerified(item.team_id);
+                setIsDialogOpen(false);
+                refreshData();
+              }}
+              disabled={item.paymentstatus === 'Verified'}
+              className="mt-4 bg-[#1F2937] border-gray-700 hover:bg-[#2D3748] hover:text-white text-gray-300 disabled:cursor-not-allowed "
+            >
+              Verify Payment
             </Button>
           </DialogContent>
         </Dialog>
