@@ -20,7 +20,6 @@ const getEventsData = async () => {
       return null;
     }
 
-    console.log('Events data:', data);
     return data;
   } catch (err) {
     console.error('Unexpected error:', err);
